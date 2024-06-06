@@ -18,8 +18,8 @@ class App extends ConsumerWidget {
       // TODO: add your app name here
       title: 'Hello World',
       // TODO: add your localization here
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+      // localizationsDelegates: AppLocalizations.localizationsDelegates,
+      // supportedLocales: AppLocalizations.supportedLocales,
       // TODO: add your theme here
       theme: appTheme.lightTheme,
       darkTheme: appTheme.darkTheme,

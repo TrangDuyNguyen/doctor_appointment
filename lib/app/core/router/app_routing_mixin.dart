@@ -10,20 +10,18 @@ mixin AppRoutingMixin {
         Map<String, String> pathParameters = const <String, String>{},
         Map<String, dynamic> queryParameters = const <String, dynamic>{},
       }) {
-    return context.pushNamed(
+    return context.push(
       page.namePage,
       extra: args,
-      pathParameters: pathParameters,
-      queryParameters: queryParameters,
     );
   }
 
-  // void goHome<T extends Object?>(
-  //     BuildContext context, {
-  //       Object? extras,
-  //     }) {
-  //   return context.go(AppPage.home.getPath, extra: extras);
-  // }
+  void goWelcomeHome<T extends Object?>(
+      BuildContext context, {
+        Object? extras,
+      }) {
+    return context.go(AppPage.welcome.getPath, extra: extras);
+  }
 
   void goOnBoard<T extends Object?>(
       BuildContext context, {

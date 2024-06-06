@@ -1,4 +1,7 @@
+import 'package:doctor_appointment/app/features/auth/view/create_account_screen.dart';
+import 'package:doctor_appointment/app/features/auth/view/sign_in_screen.dart';
 import 'package:doctor_appointment/app/features/auth/view/splash_screen.dart';
+import 'package:doctor_appointment/app/features/auth/view/welcome_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -18,7 +21,18 @@ final routerProvider = Provider<GoRouter>(
           path: AppPage.splash.getPath,
           builder: (context, state) => const SplashScreen(),
         ),
-
+        GoRoute(
+          path: AppPage.welcome.getPath,
+          builder: (context, state) => const WelcomeScreen(),
+        ),
+        GoRoute(
+          path: AppPage.signIn.getPath,
+          builder: (context, state) => const SignInScreen(),
+        ),
+        GoRoute(
+          path: AppPage.signUp.getPath,
+          builder: (context, state) => const CreateAccountScreen(),
+        ),
         /// for showing onboarding
         GoRoute(
           path: AppPage.onboard.getPath,

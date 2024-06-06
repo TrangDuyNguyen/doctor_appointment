@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppTextStyles {
-  late ThemeData _themeData;
+  late final ThemeData _themeData;
 
   AppTextStyles(this._themeData);
 
@@ -12,7 +12,7 @@ class AppTextStyles {
   AppTextStyles copyWith({Color? color}) {
     ColorScheme colorScheme = _themeData.colorScheme;
     if (color != null) {
-      colorScheme = colorScheme.copyWith(onBackground: color);
+      colorScheme = colorScheme.copyWith(onSurface: color);
     }
     return AppTextStyles(_themeData.copyWith(colorScheme: colorScheme));
   }
