@@ -40,6 +40,11 @@ dependencies:
   flutter_native_splash: ^2.4.0
   flutter_launcher_icons: ^0.13.1
   intl_phone_field: ^3.2.0
+  validators: ^3.0.0
+  flutter_hooks: ^0.20.5
+  dio: 5.4.3+1
+  formz: 0.7.0
+  rxdart: 0.27.7
 
   flutter_gen: any
 dev_dependencies:

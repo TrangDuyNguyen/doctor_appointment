@@ -27,7 +27,7 @@ final routerProvider = Provider<GoRouter>(
         ),
         GoRoute(
           path: AppPage.signIn.getPath,
-          builder: (context, state) => const SignInScreen(),
+          builder: (context, state) => SignInScreen(),
         ),
         GoRoute(
           path: AppPage.signUp.getPath,

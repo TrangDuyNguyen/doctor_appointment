@@ -6,15 +6,19 @@ import 'package:doctor_appointment/design/widget/round_button.dart';
 import 'package:doctor_appointment/design/widget/text_form_base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class CreateAccountScreen extends StatefulWidget {
+class CreateAccountScreen extends StatefulHookConsumerWidget {
   const CreateAccountScreen({super.key});
 
   @override
-  State<CreateAccountScreen> createState() => _CreateAccountScreenState();
+  ConsumerState<CreateAccountScreen> createState() => _CreateAccountScreenState();
 }
 
-class _CreateAccountScreenState extends State<CreateAccountScreen> with AppRoutingMixin {
+class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> with AppRoutingMixin {
+
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -24,38 +28,44 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> with AppRouti
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          leading: InkWell(
-            onTap: () {
-              pop(context);
-            },
-            child: Image.asset(
-              "lib/design/assets/icons/back.png",
-              width: 24,
-              height: 24,
-            ),
+    final userNameTcr = StateProvider.autoDispose<TextEditingController>(
+            (ref) => TextEditingController());
+
+
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: InkWell(
+          onTap: () {
+            pop(context);
+          },
+          child: Image.asset(
+            "lib/design/assets/icons/back.png",
+            width: 24,
+            height: 24,
           ),
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SizedBox(
-            height: context.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Create Your \nAccount",
-                      style: context.appTextStyles.headlineLarge.bold
-                          .copyWith(color: context.appColors.brandPrimary),
-                    ),
-                  ],
-                ),
-                Column(
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: SizedBox(
+          height: context.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "Create Your \nAccount",
+                    style: context.appTextStyles.headlineLarge.bold
+                        .copyWith(color: context.appColors.brandPrimary),
+                  ),
+                ],
+              ),
+              Form(
+                key: _formKey,
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     BaseTextInputField(
@@ -165,8 +175,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> with AppRouti
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

@@ -1,14 +1,8 @@
 import 'package:doctor_appointment/design/common/color_extention.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-final showErrorIconProvider = StateProvider.autoDispose<bool>((ref) => false);
-final hasInputProvider = StateProvider.autoDispose<bool>((ref) => false);
-final isShowPasswordProvider = StateProvider.autoDispose<bool>((ref) => false);
-final textControllerProvider = StateProvider.autoDispose<TextEditingController>(
-    (ref) => TextEditingController());
-
-class BaseTextInputField extends ConsumerWidget {
+class BaseTextInputField extends HookWidget {
   final bool? isObscureText;
   final TextAlign? textAlign;
   final bool? disable;
@@ -29,7 +23,7 @@ class BaseTextInputField extends ConsumerWidget {
   final Widget? prefixIcon;
   final bool? enableClearText;
 
-  /// focus node
+  /// forcus node
   final FocusNode? focusNode;
   final bool autoFocus;
 
@@ -55,21 +49,21 @@ class BaseTextInputField extends ConsumerWidget {
     this.enableClearText,
   });
 
+  /// ==================================
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final showErrorIcon = ref.watch(showErrorIconProvider.notifier);
-    final hasInput = ref.watch(hasInputProvider.notifier);
-    final isShowPassword = ref.watch(isShowPasswordProvider.notifier);
-    final textController = ref.watch(textControllerProvider.notifier);
-
-    if (controller != null) {
-      textController.state = controller!;
-    }
-
-    textController.state.addListener(() {
-      hasInput.state =
-          textController.state.text.isNotEmpty && !showErrorIcon.state;
-    });
+  Widget build(BuildContext context) {
+    ValueNotifier<bool> mShowErrorIconNotifier = useValueNotifier<bool>(false);
+    ValueNotifier<bool> mHasInputNotifier = useValueNotifier<bool>(false);
+    ValueNotifier<bool> mIsShowPassword = useValueNotifier<bool>(false);
+    final mTextController = useState(controller ?? TextEditingController());
+    useEffect(() {
+      mTextController.addListener(() {
+        mHasInputNotifier.value = mTextController.value.text.isNotEmpty &&
+            !mShowErrorIconNotifier.value;
+      });
+      return null;
+    }, [mTextController]);
 
     final mAutoValidateMode = isAutoValidate == true
         ? AutovalidateMode.onUserInteraction
@@ -82,31 +76,30 @@ class BaseTextInputField extends ConsumerWidget {
         color: context.appColors.textFieldColor.withOpacity(0.5),
         border: Border.all(
             width: 1,
-            color: !hasInput.state
+            color: !mHasInputNotifier.value
                 ? context.appColors.borderColor
-                : showErrorIcon.state
+                : mIsShowPassword.value
                     ? context.appColors.error
                     : context.appColors.brandSecondary),
         borderRadius: BorderRadius.circular(15),
       ),
       child: TextFormField(
-        controller: textController.state,
+        controller: mTextController.value,
         keyboardType: textInputType,
-        style: context.appTextStyles.labelLarge,
-        obscureText: isObscureText == true ? isShowPassword.state : false,
+        obscureText: isObscureText == true ? mIsShowPassword.value : false,
         decoration: createTextInputDecoration(
           context,
-          textController.state,
-          isShowPassword,
-          showErrorIcon,
-          hasInput,
+          mTextController.value,
+          mIsShowPassword,
+          mShowErrorIconNotifier,
+          mHasInputNotifier,
         ),
         validator: (value) {
           return validateInput(
             value,
             context,
-            textController.state,
-            showErrorIcon,
+            mTextController.value,
+            mShowErrorIconNotifier,
           );
         },
         autovalidateMode: mAutoValidateMode,
@@ -114,12 +107,12 @@ class BaseTextInputField extends ConsumerWidget {
     );
   }
 
-  Widget _obscureTextIcon(StateController<bool> isShowPassword) {
+  Widget _obscureTextIcon(ValueNotifier<bool> isShowPassword) {
     return IconButton(
       icon:
-          Icon(isShowPassword.state ? Icons.visibility : Icons.visibility_off),
+          Icon(isShowPassword.value ? Icons.visibility : Icons.visibility_off),
       onPressed: () {
-        isShowPassword.state = !isShowPassword.state;
+        isShowPassword.value = !isShowPassword.value;
       },
     );
   }
@@ -145,9 +138,9 @@ class BaseTextInputField extends ConsumerWidget {
   InputDecoration createTextInputDecoration(
     BuildContext context,
     TextEditingController mController,
-    StateController<bool> mIsShowPassword,
-    StateController<bool> mShowErrorIconNotifier,
-    StateController<bool> mHasInputNotifier,
+    ValueNotifier<bool> mIsShowPassword,
+    ValueNotifier<bool> mShowErrorIconNotifier,
+    ValueNotifier<bool> mHasInputNotifier,
   ) {
     return InputDecoration(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
@@ -160,22 +153,35 @@ class BaseTextInputField extends ConsumerWidget {
         color: context.appColors.secondaryText,
         fontSize: 14,
       ),
-      floatingLabelBehavior:
-          FloatingLabelBehavior.auto, // Ensures label floats appropriately
       prefixIcon: prefixIcon,
       suffixIcon: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (isObscureText == true) _obscureTextIcon(mIsShowPassword),
-          if (mShowErrorIconNotifier.state)
-            _errorIcon(mController.text, context),
-          if (enableClearText == true && mHasInputNotifier.state)
-            IconButton(
-              onPressed: () {
-                mController.clear();
-                mShowErrorIconNotifier.state = false;
+          ValueListenableBuilder<bool>(
+            valueListenable: mShowErrorIconNotifier,
+            builder: (context, showErrorIcon, child) {
+              if (showErrorIcon) {
+                return _errorIcon(mController.text, context);
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+          if (enableClearText == true)
+            ValueListenableBuilder<bool>(
+              valueListenable: mHasInputNotifier,
+              builder: (context, hasInput, child) {
+                if (hasInput) {
+                  return IconButton(
+                    onPressed: () {
+                      mController.clear();
+                      mShowErrorIconNotifier.value = false;
+                    },
+                    icon: const Icon(Icons.highlight_remove_sharp),
+                  );
+                }
+                return const SizedBox.shrink();
               },
-              icon: const Icon(Icons.highlight_remove_sharp),
             ),
         ],
       ),
@@ -187,13 +193,13 @@ class BaseTextInputField extends ConsumerWidget {
     String? value,
     BuildContext context,
     TextEditingController mController,
-    StateController<bool> mShowErrorIconNotifier,
+    ValueNotifier<bool> _mShowErrorIconNotifier,
   ) {
     final messageValidate = validator?.call(value, context);
     if (value != null && value.isNotEmpty) {
-      mShowErrorIconNotifier.state = messageValidate != null;
+      _mShowErrorIconNotifier.value = messageValidate != null;
     } else {
-      mShowErrorIconNotifier.state = false;
+      _mShowErrorIconNotifier.value = false;
     }
     return messageValidate;
   }

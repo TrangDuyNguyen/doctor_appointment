@@ -1,68 +1,113 @@
 import 'package:doctor_appointment/app/core/router/app_routing_mixin.dart';
+import 'package:doctor_appointment/app/features/auth/model/form_state.dart';
 import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extention.dart';
 import 'package:doctor_appointment/design/common/text_extention.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:validators/validators.dart';
 
 import '../../../../design/widget/round_button.dart';
 import '../../../../design/widget/text_form_base.dart';
+import '../../../core/hook/hook_input_controller.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+class SignInScreen extends HookWidget with AppRoutingMixin {
+  SignInScreen({super.key});
 
-  @override
-  State<SignInScreen> createState() => _SignInScreenState();
-}
+  final GlobalKey<FormState> _mFormKey = GlobalKey<FormState>();
 
-class _SignInScreenState extends State<SignInScreen> with AppRoutingMixin {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          leading: InkWell(
-            onTap: () {
-              pop(context);
-            },
-            child: Image.asset(
-              "lib/design/assets/icons/back.png",
-              width: 24,
-              height: 24,
-            ),
+    final mEmailTextController = TextEditingController();
+    final mFocusEmail = useFocusNode();
+
+    final mPasswordTextController = TextEditingController();
+    final mFocusPassword = useFocusNode();
+
+    final mFormState = useState(FormAuthState());
+
+    useEffect(() {
+      mEmailTextController
+        ..text = mFormState.value.name
+        ..addListener(() {
+          mFormState.value =
+              mFormState.value.copyWith(name: mEmailTextController.text.trim());
+        });
+
+      mPasswordTextController
+        ..text = mFormState.value.password
+        ..addListener(() {
+          mFormState.value = mFormState.value
+              .copyWith(name: mPasswordTextController.text.trim());
+        });
+      return () {
+        // mEmailTextController.dispose();
+        // mFocusEmail.dispose();
+        // mPasswordTextController.dispose();
+        // mFocusPassword.dispose();
+      };
+    });
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: InkWell(
+          onTap: () {
+            pop(context);
+          },
+          child: Image.asset(
+            "lib/design/assets/icons/back.png",
+            width: 24,
+            height: 24,
           ),
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SizedBox(
-            height: context.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Sign In to Your \nAccount",
-                      style: context.appTextStyles.headlineLarge.bold
-                          .copyWith(color: context.appColors.brandPrimary),
-                    ),
-                  ],
-                ),
-                Column(
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: SizedBox(
+          height: context.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "Sign In to Your \nAccount",
+                    style: context.appTextStyles.headlineLarge.bold
+                        .copyWith(color: context.appColors.brandPrimary),
+                  ),
+                ],
+              ),
+              Form(
+                key: _mFormKey,
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     BaseTextInputField(
-                        labelText: "Username",
-                        isAutoValidate: false,
-                        errorMessageOnValidation: (text, context) {}),
+                        labelText: "Email",
+                        controller: mEmailTextController,
+                        focusNode: mFocusEmail,
+                        isAutoValidate: true,
+                        errorMessageOnValidation: (value, context) {
+                          print(value);
+                          return isEmail(value.toString())
+                              ? null
+                              : 'Provide a valid email';
+                        }),
                     const SizedBox(
                       height: 16,
                     ),
                     BaseTextInputField(
                         isObscureText: true,
                         labelText: "Password",
-                        isAutoValidate: false,
-                        errorMessageOnValidation: (text, context) {}),
+                        controller: mPasswordTextController,
+                        focusNode: mFocusPassword,
+                        isAutoValidate: true,
+                        errorMessageOnValidation: (value, context) {
+                          return isLength(value.toString(), 4)
+                              ? null
+                              : 'Provide a valid password of more than 4 characters';
+                        }),
                     const SizedBox(
                       height: 32,
                     ),
@@ -154,11 +199,12 @@ class _SignInScreenState extends State<SignInScreen> with AppRoutingMixin {
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 }
+//loi validate ben textfield
