@@ -1,28 +1,59 @@
+import 'package:doctor_appointment/app/core/validators/email.dart';
+import 'package:doctor_appointment/app/core/validators/name.dart';
+import 'package:doctor_appointment/app/core/validators/password.dart';
 import 'package:formz/formz.dart';
 
+import '../../../core/eviroments/app_config.dart';
+
 class FormAuthState with FormzMixin {
-  final String name;
-  final String email;
-  final String password;
-  final String cfPassword;
+  final Name name;
+  final Email email;
+  final Password password;
+  final ConfirmPassword cfPassword;
   final FormzSubmissionStatus status;
 
+  factory FormAuthState.fake() {
+    return FormAuthState(
+      name: const Name.pure('Nguyen Duy Trang'),
+      email: const Email.pure('trangndps10349@gmail.com'),
+      password: const Password.pure('012@Aaaa'),
+      cfPassword: const ConfirmPassword.pure(
+        password: '012@Aaaa',
+        value: '012@Aaaa',
+      ),
+      status: FormzSubmissionStatus.initial,
+    );
+  }
+
+  factory FormAuthState.initial() {
+    // if (AppConfig.instance.isDebugMode) {
+    return FormAuthState.fake();
+    // }
+    // return FormAuthState(
+    //   name: const Name.pure(),
+    //   email: const Email.pure(),
+    //   password: const Password.pure(),
+    //   cfPassword: const ConfirmPassword.pure(),
+    //   status: FormzSubmissionStatus.initial,
+    // );
+  }
+
   FormAuthState({
-    String? name,
-    String? email,
-    String? password,
-    String? cfPassword,
+    Name? name,
+    Email? email,
+    Password? password,
+    ConfirmPassword? cfPassword,
     this.status = FormzSubmissionStatus.initial,
-  })  : name = name ?? "",
-        email = email ?? "",
-        password = password ?? "",
-        cfPassword = cfPassword ?? "";
+  })  : name = name ?? const Name.pure(),
+        email = email ?? const Email.pure(),
+        password = password ?? const Password.pure(),
+        cfPassword = cfPassword ?? const ConfirmPassword.pure();
 
   FormAuthState copyWith({
-    String? name,
-    String? email,
-    String? password,
-    String? cfPassword,
+    Name? name,
+    Email? email,
+    Password? password,
+    ConfirmPassword? cfPassword,
     FormzSubmissionStatus? status,
   }) {
     return FormAuthState(
@@ -37,5 +68,4 @@ class FormAuthState with FormzMixin {
   @override
   // TODO: implement inputs
   List<FormzInput> get inputs => throw UnimplementedError();
-
 }

@@ -1,0 +1,11 @@
+// /// Application settings key
+// String kSettingBoxKey = 'settingsBox';
+// String kSettingLanguageKey = 'language';
+// String kSettingCurrencyKey = 'currency';
+// String kIsInstalled = 'installed';
+// String kSettingThemeKey = 'theme';
+// String kSettingNotificationEnabledKey = 'notificationEnabled';
+// String kSettingCountryKey = 'country';
+// String kCurrenciesSupportKey = 'support_currencies';
+// String kLanguagesSupportKey = 'support_langages';
+// String kCountriesSupportKey = 'support_countries';

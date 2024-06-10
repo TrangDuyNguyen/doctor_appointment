@@ -1,4 +1,5 @@
 import 'package:doctor_appointment/app/core/router/app_routing_mixin.dart';
+import 'package:doctor_appointment/app/core/validators/password.dart';
 import 'package:doctor_appointment/app/features/auth/model/form_state.dart';
 import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extention.dart';
@@ -10,6 +11,8 @@ import 'package:validators/validators.dart';
 import '../../../../design/widget/round_button.dart';
 import '../../../../design/widget/text_form_base.dart';
 import '../../../core/hook/hook_input_controller.dart';
+import '../../../core/validators/email.dart';
+import '../../../core/validators/name.dart';
 
 class SignInScreen extends HookWidget with AppRoutingMixin {
   SignInScreen({super.key});
@@ -24,28 +27,25 @@ class SignInScreen extends HookWidget with AppRoutingMixin {
     final mPasswordTextController = TextEditingController();
     final mFocusPassword = useFocusNode();
 
-    final mFormState = useState(FormAuthState());
+    final mFormState = useState(FormAuthState.initial());
+
+    final obscureText = useState<bool>(true);
 
     useEffect(() {
       mEmailTextController
-        ..text = mFormState.value.name
+        ..text = mFormState.value.email.value
         ..addListener(() {
-          mFormState.value =
-              mFormState.value.copyWith(name: mEmailTextController.text.trim());
+          mFormState.value = mFormState.value
+              .copyWith(email: Email.dirty(mEmailTextController.text.trim()));
         });
 
       mPasswordTextController
-        ..text = mFormState.value.password
+        ..text = mFormState.value.password.value
         ..addListener(() {
           mFormState.value = mFormState.value
-              .copyWith(name: mPasswordTextController.text.trim());
+              .copyWith(password: Password.dirty(mPasswordTextController.text.trim()));
         });
-      return () {
-        // mEmailTextController.dispose();
-        // mFocusEmail.dispose();
-        // mPasswordTextController.dispose();
-        // mFocusPassword.dispose();
-      };
+      return () {};
     });
 
     return Scaffold(
@@ -88,26 +88,29 @@ class SignInScreen extends HookWidget with AppRoutingMixin {
                         controller: mEmailTextController,
                         focusNode: mFocusEmail,
                         isAutoValidate: true,
+                        validator: (value, context) {
+                          return mFormState.value.email.validator(value)?.text();
+                        },
                         errorMessageOnValidation: (value, context) {
-                          print(value);
-                          return isEmail(value.toString())
-                              ? null
-                              : 'Provide a valid email';
+                          return mFormState.value.email.validator(value)?.text();
                         }),
                     const SizedBox(
                       height: 16,
                     ),
                     BaseTextInputField(
-                        isObscureText: true,
-                        labelText: "Password",
-                        controller: mPasswordTextController,
-                        focusNode: mFocusPassword,
-                        isAutoValidate: true,
-                        errorMessageOnValidation: (value, context) {
-                          return isLength(value.toString(), 4)
-                              ? null
-                              : 'Provide a valid password of more than 4 characters';
-                        }),
+                      isObscureText: obscureText.value,
+                      labelText: "Password",
+                      controller: mPasswordTextController,
+                      focusNode: mFocusPassword,
+                      isAutoValidate: true,
+                      validator: (value, context) {
+                        return mFormState.value.password.validator(value)?.text();
+                      },
+                      errorMessageOnValidation:
+                          (String? value, BuildContext context) {
+                            return mFormState.value.password.validator(value)?.text();
+                      },
+                    ),
                     const SizedBox(
                       height: 32,
                     ),
@@ -207,4 +210,3 @@ class SignInScreen extends HookWidget with AppRoutingMixin {
     );
   }
 }
-//loi validate ben textfield

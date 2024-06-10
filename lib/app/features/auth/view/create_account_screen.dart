@@ -1,4 +1,7 @@
 import 'package:doctor_appointment/app/core/router/app_routing_mixin.dart';
+import 'package:doctor_appointment/app/core/validators/email.dart';
+import 'package:doctor_appointment/app/core/validators/name.dart';
+import 'package:doctor_appointment/app/core/validators/password.dart';
 import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extention.dart';
 import 'package:doctor_appointment/design/common/text_extention.dart';
@@ -6,17 +9,21 @@ import 'package:doctor_appointment/design/widget/round_button.dart';
 import 'package:doctor_appointment/design/widget/text_form_base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../model/form_state.dart';
 
 class CreateAccountScreen extends StatefulHookConsumerWidget {
   const CreateAccountScreen({super.key});
 
   @override
-  ConsumerState<CreateAccountScreen> createState() => _CreateAccountScreenState();
+  ConsumerState<CreateAccountScreen> createState() =>
+      _CreateAccountScreenState();
 }
 
-class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> with AppRoutingMixin {
-
+class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen>
+    with AppRoutingMixin {
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -28,10 +35,53 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> with 
 
   @override
   Widget build(BuildContext context) {
-    final userNameTcr = StateProvider.autoDispose<TextEditingController>(
-            (ref) => TextEditingController());
+    final mNameTextController = TextEditingController();
+    final mFocusName = useFocusNode();
 
+    final mEmailTextController = TextEditingController();
+    final mFocusEmail = useFocusNode();
 
+    final mPasswordTextController = TextEditingController();
+    final mFocusPassword = useFocusNode();
+
+    final mRePasswordTextController = TextEditingController();
+    final mFocusRePassword = useFocusNode();
+
+    final mFormState = useState(FormAuthState.initial());
+
+    final obscureText = useState<bool>(true);
+
+    useEffect(() {
+      mNameTextController
+        ..text = mFormState.value.name.value
+        ..addListener(() {
+          mFormState.value = mFormState.value
+              .copyWith(name: Name.dirty(mNameTextController.text.trim()));
+        });
+
+      mEmailTextController
+        ..text = mFormState.value.email.value
+        ..addListener(() {
+          mFormState.value = mFormState.value
+              .copyWith(email: Email.dirty(mEmailTextController.text.trim()));
+        });
+
+      mPasswordTextController
+        ..text = mFormState.value.password.value
+        ..addListener(() {
+          mFormState.value = mFormState.value.copyWith(
+              password: Password.dirty(mPasswordTextController.text.trim()));
+        });
+      mRePasswordTextController
+        ..text = mFormState.value.cfPassword.value
+        ..addListener(() {
+          mFormState.value = mFormState.value.copyWith(
+              cfPassword: ConfirmPassword.dirty(
+                  password: mPasswordTextController.text.trim(),
+                  value: mRePasswordTextController.text.trim()));
+        });
+      return () {};
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -69,32 +119,72 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> with 
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     BaseTextInputField(
+                        controller: mNameTextController,
+                        focusNode: mFocusName,
                         labelText: "Username",
-                        isAutoValidate: false,
-                        errorMessageOnValidation: (text, context) {}),
+                        isAutoValidate: true,
+                        validator: (value, context) {
+                          return mFormState.value.name.validator(value)?.text();
+                        },
+                        errorMessageOnValidation: (value, context) {
+                          return mFormState.value.name.validator(value)?.text();
+                        }),
                     const SizedBox(
                       height: 16,
                     ),
                     BaseTextInputField(
+                        controller: mEmailTextController,
+                        focusNode: mFocusEmail,
                         labelText: "Email",
                         isAutoValidate: false,
-                        errorMessageOnValidation: (text, context) {}),
+                        validator: (value, context) {
+                          return mFormState.value.email
+                              .validator(value)
+                              ?.text();
+                        },
+                        errorMessageOnValidation: (value, context) {
+                          return mFormState.value.email
+                              .validator(value)
+                              ?.text();
+                        }),
                     const SizedBox(
                       height: 16,
                     ),
                     BaseTextInputField(
+                        controller: mPasswordTextController,
+                        focusNode: mFocusPassword,
                         isObscureText: true,
                         labelText: "Password",
                         isAutoValidate: false,
-                        errorMessageOnValidation: (text, context) {}),
+                        validator: (value, context) {
+                          return mFormState.value.password
+                              .validator(value)
+                              ?.text();
+                        },
+                        errorMessageOnValidation: (value, context) {
+                          return mFormState.value.password
+                              .validator(value)
+                              ?.text();
+                        }),
                     const SizedBox(
                       height: 16,
                     ),
                     BaseTextInputField(
+                        controller: mRePasswordTextController,
+                        focusNode: mFocusRePassword,
                         isObscureText: true,
                         labelText: "Confirm Password",
                         isAutoValidate: false,
-                        errorMessageOnValidation: (text, context) {}),
+                        validator: (value, context) {
+                          return mFormState.value.password
+                              .validator(value)
+                              ?.text();
+                        },
+                        errorMessageOnValidation: (value, context) {
+                          return mFormState.value.password
+                              .validator(value)
+                              ?.text();
+                        }),
                     const SizedBox(
                       height: 32,
                     ),

@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class BaseTextInputField extends HookWidget {
-  final bool? isObscureText;
+  final bool isObscureText;
   final TextAlign? textAlign;
   final bool? disable;
-  final bool? isAutoValidate;
+  final bool isAutoValidate;
   final String? labelText;
 
   final bool? isRequire;
   final String? name;
   final TextEditingController? controller;
-  final Function(String? value, BuildContext context)? validator;
-  final Function(String? value, BuildContext context)? errorMessageOnValidation;
+  final String? Function(String? value, BuildContext context)? validator;
+  final String? Function(String? value, BuildContext context)?
+      errorMessageOnValidation;
 
   final TextInputAction? textInputAction;
   final void Function(String)? onFieldSubmitted;
@@ -23,7 +24,7 @@ class BaseTextInputField extends HookWidget {
   final Widget? prefixIcon;
   final bool? enableClearText;
 
-  /// forcus node
+  /// focus node
   final FocusNode? focusNode;
   final bool autoFocus;
 
@@ -49,68 +50,52 @@ class BaseTextInputField extends HookWidget {
     this.enableClearText,
   });
 
-  /// ==================================
-
   @override
   Widget build(BuildContext context) {
-    ValueNotifier<bool> mShowErrorIconNotifier = useValueNotifier<bool>(false);
-    ValueNotifier<bool> mHasInputNotifier = useValueNotifier<bool>(false);
-    ValueNotifier<bool> mIsShowPassword = useValueNotifier<bool>(false);
-    final mTextController = useState(controller ?? TextEditingController());
+    final obscureText = useState(isObscureText);
+    final showErrorIconNotifier = useState(false);
+    final hasInputNotifier = useState(false);
+    final textController = useState(controller ?? TextEditingController());
+
     useEffect(() {
-      mTextController.addListener(() {
-        mHasInputNotifier.value = mTextController.value.text.isNotEmpty &&
-            !mShowErrorIconNotifier.value;
+      textController.value.addListener(() {
+        hasInputNotifier.value = textController.value.text.isNotEmpty &&
+            !showErrorIconNotifier.value;
       });
       return null;
-    }, [mTextController]);
+    }, [textController.value]);
 
-    final mAutoValidateMode = isAutoValidate == true
+    final autoValidateMode = isAutoValidate
         ? AutovalidateMode.onUserInteraction
         : AutovalidateMode.disabled;
 
-    return Container(
-      height: 56,
-      padding: const EdgeInsets.only(top: 8, bottom: 8),
-      decoration: BoxDecoration(
-        color: context.appColors.textFieldColor.withOpacity(0.5),
-        border: Border.all(
-            width: 1,
-            color: !mHasInputNotifier.value
-                ? context.appColors.borderColor
-                : mIsShowPassword.value
-                    ? context.appColors.error
-                    : context.appColors.brandSecondary),
-        borderRadius: BorderRadius.circular(15),
+    return TextFormField(
+      controller: textController.value,
+      keyboardType: textInputType,
+      obscureText: obscureText.value,
+      decoration: createTextInputDecoration(
+        context,
+        textController.value,
+        obscureText,
+        showErrorIconNotifier,
+        hasInputNotifier,
       ),
-      child: TextFormField(
-        controller: mTextController.value,
-        keyboardType: textInputType,
-        obscureText: isObscureText == true ? mIsShowPassword.value : false,
-        decoration: createTextInputDecoration(
+      validator: (value) {
+        return validateInput(
+          value,
           context,
-          mTextController.value,
-          mIsShowPassword,
-          mShowErrorIconNotifier,
-          mHasInputNotifier,
-        ),
-        validator: (value) {
-          return validateInput(
-            value,
-            context,
-            mTextController.value,
-            mShowErrorIconNotifier,
-          );
-        },
-        autovalidateMode: mAutoValidateMode,
-      ),
+          textController.value,
+          showErrorIconNotifier,
+        );
+      },
+      autovalidateMode: autoValidateMode,
     );
   }
 
   Widget _obscureTextIcon(ValueNotifier<bool> isShowPassword) {
     return IconButton(
       icon:
-          Icon(isShowPassword.value ? Icons.visibility : Icons.visibility_off),
+          Icon(isShowPassword.value ? Icons.visibility_off : Icons.visibility),
       onPressed: () {
         isShowPassword.value = !isShowPassword.value;
       },
@@ -120,18 +105,19 @@ class BaseTextInputField extends HookWidget {
   Widget _errorIcon(String value, BuildContext context) {
     return Builder(builder: (context) {
       return IconButton(
-          onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content:
-                    Text(errorMessageOnValidation?.call(value, context) ?? ''),
-              ),
-            );
-          },
-          icon: Icon(
-            Icons.error,
-            color: context.appColors.error,
-          ));
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content:
+                  Text(errorMessageOnValidation?.call(value, context) ?? ''),
+            ),
+          );
+        },
+        icon: Icon(
+          Icons.error,
+          color: context.appColors.error,
+        ),
+      );
     });
   }
 
@@ -148,6 +134,18 @@ class BaseTextInputField extends HookWidget {
         borderSide: BorderSide.none,
         borderRadius: BorderRadius.circular(15),
       ),
+      enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: context.appColors.grayColorMedium)),
+      errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: context.appColors.error)),
+      focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: context.appColors.error)),
+      focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: context.appColors.brandPrimary)),
       labelText: labelText,
       labelStyle: TextStyle(
         color: context.appColors.secondaryText,
@@ -157,7 +155,7 @@ class BaseTextInputField extends HookWidget {
       suffixIcon: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (isObscureText == true) _obscureTextIcon(mIsShowPassword),
+          if (isObscureText) _obscureTextIcon(mIsShowPassword),
           ValueListenableBuilder<bool>(
             valueListenable: mShowErrorIconNotifier,
             builder: (context, showErrorIcon, child) {
@@ -193,13 +191,13 @@ class BaseTextInputField extends HookWidget {
     String? value,
     BuildContext context,
     TextEditingController mController,
-    ValueNotifier<bool> _mShowErrorIconNotifier,
+    ValueNotifier<bool> mShowErrorIconNotifier,
   ) {
     final messageValidate = validator?.call(value, context);
     if (value != null && value.isNotEmpty) {
-      _mShowErrorIconNotifier.value = messageValidate != null;
+      mShowErrorIconNotifier.value = messageValidate != null;
     } else {
-      _mShowErrorIconNotifier.value = false;
+      mShowErrorIconNotifier.value = false;
     }
     return messageValidate;
   }
