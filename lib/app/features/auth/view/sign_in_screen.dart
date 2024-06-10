@@ -42,8 +42,8 @@ class SignInScreen extends HookWidget with AppRoutingMixin {
       mPasswordTextController
         ..text = mFormState.value.password.value
         ..addListener(() {
-          mFormState.value = mFormState.value
-              .copyWith(password: Password.dirty(mPasswordTextController.text.trim()));
+          mFormState.value = mFormState.value.copyWith(
+              password: Password.dirty(mPasswordTextController.text.trim()));
         });
       return () {};
     });
@@ -89,10 +89,14 @@ class SignInScreen extends HookWidget with AppRoutingMixin {
                         focusNode: mFocusEmail,
                         isAutoValidate: true,
                         validator: (value, context) {
-                          return mFormState.value.email.validator(value)?.text();
+                          return mFormState.value.email
+                              .validator(value)
+                              ?.text();
                         },
                         errorMessageOnValidation: (value, context) {
-                          return mFormState.value.email.validator(value)?.text();
+                          return mFormState.value.email
+                              .validator(value)
+                              ?.text();
                         }),
                     const SizedBox(
                       height: 16,
@@ -104,11 +108,15 @@ class SignInScreen extends HookWidget with AppRoutingMixin {
                       focusNode: mFocusPassword,
                       isAutoValidate: true,
                       validator: (value, context) {
-                        return mFormState.value.password.validator(value)?.text();
+                        return mFormState.value.password
+                            .validator(value)
+                            ?.text();
                       },
                       errorMessageOnValidation:
                           (String? value, BuildContext context) {
-                            return mFormState.value.password.validator(value)?.text();
+                        return mFormState.value.password
+                            .validator(value)
+                            ?.text();
                       },
                     ),
                     const SizedBox(

@@ -3,7 +3,6 @@ import 'package:doctor_appointment/app/core/validators/name.dart';
 import 'package:doctor_appointment/app/core/validators/password.dart';
 import 'package:formz/formz.dart';
 
-import '../../../core/eviroments/app_config.dart';
 
 class FormAuthState with FormzMixin {
   final Name name;

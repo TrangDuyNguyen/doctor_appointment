@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../l10n/l10n.dart';
 import 'core/router/router.dart';
 import 'core/theme/app_theme.dart';
 
