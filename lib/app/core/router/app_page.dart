@@ -4,6 +4,7 @@ enum AppPage {
   onboard,
   signIn,
   signUp,
+  fillProfile,
 }
 
 extension AppPageEx on AppPage {
@@ -11,20 +12,23 @@ extension AppPageEx on AppPage {
     AppPage.onboard: 'main',
     AppPage.splash: 'splash',
     AppPage.welcome: 'welcome',
-    AppPage.signIn:'signIn',
-    AppPage.signUp:'signUp'
+    AppPage.signIn: 'signIn',
+    AppPage.signUp: 'signUp',
+    AppPage.fillProfile: 'fillProfile',
   };
 
   static const Map<AppPage, String> _pagePaths = {
     /// Main
     AppPage.onboard: '/main',
+
     /// Auth
     AppPage.splash: '/splash',
     AppPage.welcome: '/welcome',
     AppPage.signIn: '/signIn',
-    AppPage.signUp:'/signUp'
-    ///
+    AppPage.signUp: '/signUp',
+    AppPage.fillProfile: '/fillProfile',
 
+    ///
   };
 
   String get namePage => _pageNames[this] ?? '';

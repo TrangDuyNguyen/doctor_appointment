@@ -66,5 +66,5 @@ class FormAuthState with FormzMixin {
 
   @override
   // TODO: implement inputs
-  List<FormzInput> get inputs => throw UnimplementedError();
+  List<FormzInput> get inputs => [name, email, password, cfPassword];
 }

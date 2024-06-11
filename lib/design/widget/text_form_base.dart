@@ -23,6 +23,7 @@ class BaseTextInputField extends HookWidget {
   final TextInputType? textInputType;
   final Widget? prefixIcon;
   final bool? enableClearText;
+  final bool readOnly;
 
   /// focus node
   final FocusNode? focusNode;
@@ -48,6 +49,7 @@ class BaseTextInputField extends HookWidget {
     this.textInputType,
     this.prefixIcon,
     this.enableClearText,
+    this.readOnly = false,
   });
 
   @override
@@ -73,6 +75,8 @@ class BaseTextInputField extends HookWidget {
       controller: textController.value,
       keyboardType: textInputType,
       obscureText: obscureText.value,
+      readOnly: readOnly,
+      onTap: onTap,
       decoration: createTextInputDecoration(
         context,
         textController.value,

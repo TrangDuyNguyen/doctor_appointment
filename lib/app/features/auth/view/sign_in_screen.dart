@@ -1,6 +1,6 @@
 import 'package:doctor_appointment/app/core/router/app_routing_mixin.dart';
 import 'package:doctor_appointment/app/core/validators/password.dart';
-import 'package:doctor_appointment/app/features/auth/model/form_state.dart';
+import 'package:doctor_appointment/app/features/auth/form_state/form_state.dart';
 import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extention.dart';
 import 'package:doctor_appointment/design/common/text_extention.dart';

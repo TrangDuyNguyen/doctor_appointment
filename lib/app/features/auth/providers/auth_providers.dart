@@ -1,4 +1,4 @@
-import 'package:doctor_appointment/app/features/auth/model/auth_state.dart';
+import 'package:doctor_appointment/app/features/auth/form_state/auth_state.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../repository/auth_repository.dart';

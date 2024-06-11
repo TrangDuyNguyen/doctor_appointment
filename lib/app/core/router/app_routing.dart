@@ -1,3 +1,4 @@
+import 'package:doctor_appointment/app/features/auth/view/fill_profile_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/view/create_account_screen.dart';
@@ -23,6 +24,10 @@ final List<RouteBase> routes = [
   GoRoute(
     path: AppPage.signUp.getPath,
     builder: (context, state) => const CreateAccountScreen(),
+  ),
+  GoRoute(
+    path: AppPage.fillProfile.getPath,
+    builder: (context, state) => FillProfileScreen(),
   ),
   /// for showing onboarding
   GoRoute(

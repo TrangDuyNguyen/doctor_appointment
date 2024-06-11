@@ -33,7 +33,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  go_router:
+  go_router: 14.1.4
   hive_flutter: ^1.1.0
   hooks_riverpod: ^2.0.2
   google_fonts: 6.2.0
@@ -45,6 +45,10 @@ dependencies:
   dio: 5.4.3+1
   formz: 0.7.0
   rxdart: 0.27.7
+  get_it: 7.7.0
+  equatable: 2.0.5
+  image_picker: ^0.8.4+8
+  date_format: 2.0.7
 
   flutter_gen: any
 dev_dependencies:
