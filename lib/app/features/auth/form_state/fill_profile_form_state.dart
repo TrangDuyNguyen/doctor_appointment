@@ -8,7 +8,7 @@ import '../../../core/validators/name.dart';
 class FillProfileFormState with FormzMixin {
   final XFile avatar;
   final Name name;
-  final String dateOfBirth;
+  final DateTime dateOfBirth;
   final Email email;
   final Phone phone;
   final String gender;
@@ -19,7 +19,7 @@ class FillProfileFormState with FormzMixin {
       avatar: XFile(''),
       name: const Name.pure('Nguyen Duy Trang'),
       email: const Email.pure('trangndps10349@gmail.com'),
-      dateOfBirth: '10/04/2000',
+      dateOfBirth: DateTime.now(),
       phone: const Phone.pure(value: '0397308962'),
       gender: 'Male',
       status: FormzSubmissionStatus.initial,
@@ -45,13 +45,13 @@ class FillProfileFormState with FormzMixin {
     XFile? avatar,
     Name? name,
     Email? email,
-    String? dateOfBirth,
+    DateTime? dateOfBirth,
     Phone? phone,
     String? gender,
     this.status = FormzSubmissionStatus.initial,
   })  : name = name ?? const Name.pure(),
         email = email ?? const Email.pure(),
-        dateOfBirth = dateOfBirth ?? '',
+        dateOfBirth = dateOfBirth ?? DateTime.now(),
         phone = phone ?? const Phone.pure(),
         gender = gender ?? '',
         avatar = avatar ?? XFile('');
@@ -60,7 +60,7 @@ class FillProfileFormState with FormzMixin {
     XFile? avatar,
     Name? name,
     Email? email,
-    String? dateOfBirth,
+    DateTime? dateOfBirth,
     Phone? phone,
     String? gender,
     FormzSubmissionStatus? status,

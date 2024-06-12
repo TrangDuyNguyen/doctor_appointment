@@ -25,3 +25,16 @@ class Phone extends FormzInput<String, PhoneValidationError> {
         : PhoneValidationError.invalid;
   }
 }
+
+extension PhoneValidationErrorEx on PhoneValidationError {
+  String text() {
+    switch (this) {
+      case PhoneValidationError.empty:
+        return 'Phone number must not be empty';
+      case PhoneValidationError.invalid:
+        return 'Invalid phone number';
+      default:
+        return '';
+    }
+  }
+}

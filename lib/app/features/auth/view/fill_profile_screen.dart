@@ -4,13 +4,17 @@ import 'package:doctor_appointment/app/core/router/app_routing_mixin.dart';
 import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extention.dart';
 import 'package:doctor_appointment/design/common/text_extention.dart';
+import 'package:doctor_appointment/design/widget/round_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
+import '../../../../design/utils/dialog_utils.dart';
 import '../../../../design/widget/bottom_sheet.dart';
 import '../../../../design/widget/text_form_base.dart';
+import '../../../core/hook/hook_input_controller.dart';
 import '../../../core/validators/email.dart';
 import '../../../core/validators/name.dart';
 import '../../../core/validators/phone.dart';
@@ -22,19 +26,19 @@ class FillProfileScreen extends HookWidget with AppRoutingMixin {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final mNameTextController = TextEditingController();
+    final mNameTextController = useTextEditingController();
     final mFocusName = useFocusNode();
 
-    final mBirthDayTextController = TextEditingController();
+    final mBirthDayTextController = useTextEditingController();
     final mBirthDayFocus = useFocusNode();
 
-    final mEmailTextController = TextEditingController();
+    final mEmailTextController = useTextEditingController();
     final mFocusEmail = useFocusNode();
 
-    final mPhoneController = TextEditingController();
+    final mPhoneController = useTextEditingController();
     final mPhoneFocus = useFocusNode();
 
-    final mGenderTextController = TextEditingController();
+    final mGenderTextController = useTextEditingController();
     final mGenderFocus = useFocusNode();
 
     final mFormState = useState(FillProfileFormState.initial());
@@ -48,10 +52,12 @@ class FillProfileScreen extends HookWidget with AppRoutingMixin {
         });
 
       mBirthDayTextController
-        ..text = mFormState.value.dateOfBirth
+        ..text = DateFormat('dd/MM/yyyy').format(mFormState.value.dateOfBirth)
         ..addListener(() {
-          mFormState.value = mFormState.value
-              .copyWith(dateOfBirth: mBirthDayTextController.text.trim());
+          final DateFormat formatter = DateFormat('dd/MM/yyyy');
+          mFormState.value = mFormState.value.copyWith(
+              dateOfBirth:
+                  formatter.parse(mBirthDayTextController.text.trim()));
         });
 
       mEmailTextController
@@ -75,8 +81,15 @@ class FillProfileScreen extends HookWidget with AppRoutingMixin {
               .copyWith(gender: mGenderTextController.text.trim());
         });
 
-      return () {};
-    });
+      // Dispose các controller khi widget unmount
+      return () {
+        // mNameTextController.dispose();
+        // mBirthDayTextController.dispose();
+        // mEmailTextController.dispose();
+        // mPhoneController.dispose();
+        // mGenderTextController.dispose();
+      };
+    }, []);
 
     return Scaffold(
       appBar: AppBar(
@@ -108,7 +121,7 @@ class FillProfileScreen extends HookWidget with AppRoutingMixin {
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: SizedBox(
-          height: context.height,
+          height: context.height - context.bottomSpacer,
           child: Column(
             children: [
               const SizedBox(
@@ -205,7 +218,7 @@ class FillProfileScreen extends HookWidget with AppRoutingMixin {
                           controller: mNameTextController,
                           focusNode: mFocusName,
                           labelText: "Full name",
-                          isAutoValidate: true,
+                          isAutoValidate: false,
                           validator: (value, context) {
                             return mFormState.value.name
                                 .validator(value)
@@ -234,31 +247,18 @@ class FillProfileScreen extends HookWidget with AppRoutingMixin {
                             "lib/design/assets/icons/icon_calendar.png"),
                         readOnly: true,
                         onTap: () async {
-                          print("object");
-                          String dateString = mFormState.value.dateOfBirth;
-                          DateTime dateTime;
-                          if (dateString.isNotEmpty) {
-                            final dateFormat = DateFormat('dd/MM/yyyy');
-                            dateTime = dateFormat.parse(dateString);
-                            if (dateTime.isAfter(DateTime.now())) {
-                              dateTime = DateTime.now();
-                            }
-                          } else {
-                            dateTime = DateTime.now();
-                          }
-
                           final selectedDate = await showDatePicker(
                             context: context,
-                            initialDate: dateTime,
+                            initialDate: mFormState.value.dateOfBirth,
                             firstDate: DateTime(1900),
                             lastDate: DateTime.now(),
                           );
 
                           if (selectedDate != null) {
-                            final formattedDate =
-                                DateFormat('yyyy/MM/dd').format(selectedDate);
                             mFormState.value = mFormState.value
-                                .copyWith(dateOfBirth: formattedDate);
+                                .copyWith(dateOfBirth: selectedDate);
+                            final formattedDate = DateFormat('dd/MM/yyyy')
+                                .format(mFormState.value.dateOfBirth);
                             mBirthDayTextController.text = formattedDate;
                           }
                         },
@@ -266,8 +266,155 @@ class FillProfileScreen extends HookWidget with AppRoutingMixin {
                       const SizedBox(
                         height: 16,
                       ),
+                      BaseTextInputField(
+                          labelText: "Email",
+                          controller: mEmailTextController,
+                          focusNode: mFocusEmail,
+                          isAutoValidate: false,
+                          validator: (value, context) {
+                            return mFormState.value.email
+                                .validator(value)
+                                ?.text();
+                          },
+                          errorMessageOnValidation: (value, context) {
+                            return mFormState.value.email
+                                .validator(value)
+                                ?.text();
+                          }),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      IntlPhoneField(
+                        decoration: InputDecoration(
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                  color: context.appColors.grayColorMedium)),
+                          errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide:
+                                  BorderSide(color: context.appColors.error)),
+                          focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide:
+                                  BorderSide(color: context.appColors.error)),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(
+                                  color: context.appColors.brandPrimary)),
+                        ),
+                        keyboardType: TextInputType.phone,
+                        controller: mPhoneController,
+                        focusNode: mPhoneFocus,
+                        initialCountryCode: "VN",
+                        languageCode: "vn",
+                        textInputAction: TextInputAction.done,
+                        style: context.appTextStyles.labelMedium,
+                        dropdownTextStyle: context.appTextStyles.labelMedium,
+                        dropdownIconPosition: IconPosition.trailing,
+                        disableLengthCheck: true,
+                        showCountryFlag: true,
+                        validator: (str) {
+                          return mFormState.value.phone
+                              .validator(str?.number)
+                              ?.text();
+                        },
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      BaseTextInputField(
+                        controller: mGenderTextController,
+                        focusNode: mGenderFocus,
+                        isObscureText: false,
+                        labelText: "Gender",
+                        isAutoValidate: false,
+                        readOnly: true,
+                        validator: (value, context) {
+                          return null;
+                        },
+                        errorMessageOnValidation: (value, context) {
+                          return null;
+                        },
+                        onTap: () {
+                          CustomBottomSheet.showBottomSheet(
+                            context: context,
+                            title: 'Gender',
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20, right: 20),
+                                  child: ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: 2,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: GestureDetector(
+                                          child: Text(
+                                            index == 0 ? "Female" : "Male",
+                                            style: context
+                                                .appTextStyles.labelLarge,
+                                          ),
+                                          onTap: () => {
+                                            // Change state topic
+                                            if (index == 0)
+                                              {
+                                                mFormState.value
+                                                    .copyWith(gender: "Female"),
+                                                mGenderTextController.text =
+                                                    "Female",
+                                              }
+                                            else
+                                              {
+                                                mFormState.value
+                                                    .copyWith(gender: "Male"),
+                                                mGenderTextController.text =
+                                                    "Male",
+                                              },
+                                            context.pop()
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  )),
+                            ),
+                            scrollable: false,
+                            initialChildSize: 0.6,
+                            minChildSize: 0.5,
+                            maxChildSize: 0.8,
+                            isCustomSizeWithKeyBoard: true,
+                          );
+                        },
+                      ),
                     ],
-                  ))
+                  )),
+              const Spacer(),
+              RoundButton(
+                  title: "CONTINUE",
+                  onPressed: () {
+                    DialogHelpers.showSuccessDialog(
+                      context,
+                      title: 'Congratulations!',
+                      content:
+                          "Your account is ready to use. You will \nbe redirected to the Home page in a \nfew seconds...",
+                      onConfirm: (ctx) {
+                        ctx.pop();
+                      },
+                    );
+                  }),
+              SizedBox(
+                height: context.bottomSpacer,
+              )
             ],
           ),
         ),

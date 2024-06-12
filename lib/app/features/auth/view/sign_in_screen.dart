@@ -21,10 +21,10 @@ class SignInScreen extends HookWidget with AppRoutingMixin {
 
   @override
   Widget build(BuildContext context) {
-    final mEmailTextController = TextEditingController();
+    final mEmailTextController = useTextEditingController();
     final mFocusEmail = useFocusNode();
 
-    final mPasswordTextController = TextEditingController();
+    final mPasswordTextController = useTextEditingController();
     final mFocusPassword = useFocusNode();
 
     final mFormState = useState(FormAuthState.initial());
@@ -45,8 +45,11 @@ class SignInScreen extends HookWidget with AppRoutingMixin {
           mFormState.value = mFormState.value.copyWith(
               password: Password.dirty(mPasswordTextController.text.trim()));
         });
-      return () {};
-    });
+      return () {
+        // mEmailTextController.dispose();
+        // mPasswordTextController.dispose();
+      };
+    }, []);
 
     return Scaffold(
       appBar: AppBar(

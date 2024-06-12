@@ -37,16 +37,16 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen>
 
   @override
   Widget build(BuildContext context) {
-    final mNameTextController = TextEditingController();
+    final mNameTextController = useTextEditingController();
     final mFocusName = useFocusNode();
 
-    final mEmailTextController = TextEditingController();
+    final mEmailTextController = useTextEditingController();
     final mFocusEmail = useFocusNode();
 
-    final mPasswordTextController = TextEditingController();
+    final mPasswordTextController = useTextEditingController();
     final mFocusPassword = useFocusNode();
 
-    final mRePasswordTextController = TextEditingController();
+    final mRePasswordTextController = useTextEditingController();
     final mFocusRePassword = useFocusNode();
 
     final mFormState = useState(FormAuthState.initial());
@@ -80,8 +80,13 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen>
                   password: mPasswordTextController.text.trim(),
                   value: mRePasswordTextController.text.trim()));
         });
-      return () {};
-    });
+      return () {
+        // mNameTextController.dispose();
+        // mEmailTextController.dispose();
+        // mPasswordTextController.dispose();
+        // mRePasswordTextController.dispose();
+      };
+    }, []);
 
     return Scaffold(
       appBar: AppBar(
