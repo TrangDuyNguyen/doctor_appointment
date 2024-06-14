@@ -1,4 +1,5 @@
 import 'package:doctor_appointment/app/features/auth/form_state/auth_state.dart';
+import 'package:doctor_appointment/app/features/auth/model/auth_model.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../repository/auth_repository.dart';
@@ -18,9 +19,13 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     checkAuthStatus();
   }
 
-  Future<void> checkAuthStatus() async {}
+  Future<void> checkAuthStatus() async {
 
-  Future<void> login({required String email, required String password}) async {}
+  }
+
+  Future<void> login({required String email, required String password}) async {
+    _repo.login(auth: AuthModel(email: email, password: password));
+  }
 
   Future<void> createAccount(
       {required String name,

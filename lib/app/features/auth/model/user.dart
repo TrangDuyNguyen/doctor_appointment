@@ -1,11 +1,18 @@
 import 'dart:convert';
 
-class User {
-  final String name;
-  final String email;
+class UserModel {
+  final String? name;
+  final String? email;
   final String? avatar;
+  final String? uid;
+  final String? displayName;
 
-  User({required this.name, required this.email, this.avatar});
+  UserModel(
+      {required this.uid,
+      this.displayName,
+      this.name,
+      this.email,
+      this.avatar});
 
   @override
   String toString() => 'name $name email $email avatar $avatar';
@@ -18,8 +25,25 @@ class User {
     };
   }
 
-  factory User.fromMap(Map<String, dynamic> map) {
-    return User(
+  UserModel copyWith({
+    String? name,
+    String? email,
+    String? avatar,
+    String? uid,
+    String? displayName,
+  }) {
+    return UserModel(
+      name: name ?? this.name,
+      email: email ?? this.email,
+      avatar: avatar ?? this.avatar,
+      uid: uid ?? this.uid,
+      displayName: displayName ?? this.displayName,
+    );
+  }
+
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
+      uid: map['uid'] as String,
       name: map['name'] as String,
       email: map['email'] as String,
       avatar: map['avatar'] != null ? map['avatar'] as String : null,
@@ -28,6 +52,6 @@ class User {
 
   String toJson() => json.encode(toMap());
 
-  factory User.fromJson(String source) =>
-      User.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

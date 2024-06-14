@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "674809708770",
+    "firebase_url": "https://dortor-appointment-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "dortor-appointment",
+    "storage_bucket": "dortor-appointment.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:674809708770:android:14399d68759d228257debb",
+        "android_client_info": {
+          "package_name": "com.example.doctor_appointment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3PzmTuM_kIOHAHAubFT2tmgRQkwb3WeM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

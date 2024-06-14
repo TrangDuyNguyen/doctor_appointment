@@ -1,3 +1,5 @@
+import 'package:doctor_appointment/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,6 +14,8 @@ Future<void> main() async {
   // for initializing local storage
   final appStorage = AppStorage();
   await appStorage.initAppStorage();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
     ProviderScope(

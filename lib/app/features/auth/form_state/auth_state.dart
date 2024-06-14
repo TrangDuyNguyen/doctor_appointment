@@ -2,9 +2,15 @@ import 'package:doctor_appointment/app/features/auth/model/user.dart';
 
 import '../enum/auth_status.dart';
 
+enum AuthStatus {
+  authenticated,
+  unauthenticated,
+  authenticating,
+}
+
 class AuthState {
   final String? accessToken;
-  final User? user;
+  final UserModel? user;
   final AuthStatus status;
   final String? errorMessage;
   final bool loading;
@@ -21,7 +27,7 @@ class AuthState {
 
   AuthState copyWith({
     String? accessToken,
-    User? user,
+    UserModel? user,
     AuthStatus? status,
     String? errorMessage,
     bool? loading,

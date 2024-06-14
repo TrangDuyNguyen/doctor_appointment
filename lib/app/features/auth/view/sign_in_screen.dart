@@ -6,6 +6,7 @@ import 'package:doctor_appointment/design/common/color_extention.dart';
 import 'package:doctor_appointment/design/common/text_extention.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:validators/validators.dart';
 
 import '../../../../design/widget/round_button.dart';
@@ -13,14 +14,15 @@ import '../../../../design/widget/text_form_base.dart';
 import '../../../core/hook/hook_input_controller.dart';
 import '../../../core/validators/email.dart';
 import '../../../core/validators/name.dart';
+import '../providers/auth_providers.dart';
 
-class SignInScreen extends HookWidget with AppRoutingMixin {
+class SignInScreen extends HookConsumerWidget with AppRoutingMixin {
   SignInScreen({super.key});
 
   final GlobalKey<FormState> _mFormKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final mEmailTextController = useTextEditingController();
     final mFocusEmail = useFocusNode();
 
@@ -30,6 +32,8 @@ class SignInScreen extends HookWidget with AppRoutingMixin {
     final mFormState = useState(FormAuthState.initial());
 
     final obscureText = useState<bool>(true);
+
+    final authNotifier = ref.read(authNotifierProvider.notifier);
 
     useEffect(() {
       mEmailTextController
@@ -125,7 +129,18 @@ class SignInScreen extends HookWidget with AppRoutingMixin {
                     const SizedBox(
                       height: 32,
                     ),
-                    RoundButton(title: "SIGN IN", onPressed: () {}),
+                    RoundButton(
+                        title: "SIGN IN",
+                        onPressed: () {
+                          if (_mFormKey.currentState!.validate()) {
+                            final email = mEmailTextController.text.trim();
+                            final password =
+                                mPasswordTextController.text.trim();
+                            authNotifier.login(
+                                email: email,
+                                password: password); // Call the login function
+                          }
+                        }),
                     const SizedBox(
                       height: 24,
                     ),
