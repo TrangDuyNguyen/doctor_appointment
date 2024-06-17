@@ -3,7 +3,6 @@ import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extention.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -19,7 +18,6 @@ class _SplashScreenState extends State<SplashScreen> with AppRoutingMixin {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     Future.delayed(const Duration(seconds: 2), () {
-      FlutterNativeSplash.remove();
       goWelcomeHome(context);
     });
   }

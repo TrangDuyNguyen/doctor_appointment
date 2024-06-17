@@ -6,7 +6,9 @@ abstract class AuthRepository {
     required AuthModel auth
   });
 
-  Future<String> createAccount({
+  Future<AuthState> createAccount({
     required AuthModel auth
   });
+
+  Future signOut();
 }

@@ -1,3 +1,4 @@
+import 'package:doctor_appointment/app/features/auth/view/auth_view.dart';
 import 'package:doctor_appointment/app/features/auth/view/fill_profile_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,6 +10,10 @@ import '../../features/main/view/main_view.dart';
 import 'app_page.dart';
 
 final List<RouteBase> routes = [
+  GoRoute(
+    path: AppPage.authPage.getPath,
+    builder: (context, state) => const AuthView(),
+  ),
   GoRoute(
     path: AppPage.splash.getPath,
     builder: (context, state) => const SplashScreen(),
@@ -29,6 +34,7 @@ final List<RouteBase> routes = [
     path: AppPage.fillProfile.getPath,
     builder: (context, state) => FillProfileScreen(),
   ),
+
   /// for showing onboarding
   GoRoute(
     path: AppPage.onboard.getPath,

@@ -2,12 +2,6 @@ import 'package:doctor_appointment/app/features/auth/model/user.dart';
 
 import '../enum/auth_status.dart';
 
-enum AuthStatus {
-  authenticated,
-  unauthenticated,
-  authenticating,
-}
-
 class AuthState {
   final String? accessToken;
   final UserModel? user;
@@ -20,7 +14,7 @@ class AuthState {
   AuthState({
     this.accessToken,
     this.user,
-    this.status = AuthStatus.unauthenticated,
+    this.status = AuthStatus.uninitialized,
     this.errorMessage,
     this.loading = false,
   });

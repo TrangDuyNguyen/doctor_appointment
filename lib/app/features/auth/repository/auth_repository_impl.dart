@@ -1,6 +1,7 @@
 import 'package:doctor_appointment/app/features/auth/model/auth_model.dart';
 import 'package:doctor_appointment/app/features/auth/model/user.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../enum/auth_status.dart';
 import '../form_state/auth_state.dart';
 import 'auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +11,7 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl();
 
   @override
-  Future<String> createAccount({required AuthModel auth}) async {
+  Future<AuthState> createAccount({required AuthModel auth}) async {
     // TODO: implement createAccount
     try {
       UserCredential userCredential =
@@ -18,9 +19,18 @@ class AuthRepositoryImpl implements AuthRepository {
         email: auth.email ?? "",
         password: auth.password ?? "",
       );
-      return userCredential.user?.uid ?? 'No UID';
+      User user = userCredential.user!;
+      AuthState newState = AuthState(
+        status: AuthStatus.authenticated,
+        user: UserModel(uid: user.uid),
+        accessToken: "",
+      );
+      return newState;
     } on FirebaseAuthException catch (e) {
-      return 'Error: ${e.message}';
+      AuthState errorState = AuthState(
+        status: AuthStatus.unauthenticated,
+      );
+      return errorState;
     }
   }
 
@@ -46,6 +56,12 @@ class AuthRepositoryImpl implements AuthRepository {
       );
       return errorState;
     }
+  }
+
+  @override
+  Future signOut() async {
+    // TODO: implement signOut
+    await _firebaseAuth.signOut();
   }
 }
 

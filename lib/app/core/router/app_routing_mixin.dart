@@ -4,12 +4,12 @@ import 'package:go_router/go_router.dart';
 
 mixin AppRoutingMixin {
   Future<T?> navPage<T extends Object?>(
-      BuildContext context, {
-        required AppPage page,
-        Object? args,
-        Map<String, String> pathParameters = const <String, String>{},
-        Map<String, dynamic> queryParameters = const <String, dynamic>{},
-      }) {
+    BuildContext context, {
+    required AppPage page,
+    Object? args,
+    Map<String, String> pathParameters = const <String, String>{},
+    Map<String, dynamic> queryParameters = const <String, dynamic>{},
+  }) {
     return context.push(
       page.namePage,
       extra: args,
@@ -17,17 +17,21 @@ mixin AppRoutingMixin {
   }
 
   void goWelcomeHome<T extends Object?>(
-      BuildContext context, {
-        Object? extras,
-      }) {
-    return context.go(AppPage.welcome.getPath, extra: extras);
+    BuildContext context, {
+    Object? extras,
+  }) {
+    return WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.go(AppPage.welcome.getPath, extra: extras);
+    });
   }
 
   void goOnBoard<T extends Object?>(
-      BuildContext context, {
-        Object? arguments,
-      }) {
-    return context.go(AppPage.onboard.getPath, extra: arguments);
+    BuildContext context, {
+    Object? arguments,
+  }) {
+    return WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.go(AppPage.onboard.getPath, extra: arguments);
+    });
   }
 
   void pop<T extends Object?>(BuildContext context, [T? result]) {

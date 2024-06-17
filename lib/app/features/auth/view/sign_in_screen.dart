@@ -7,13 +7,11 @@ import 'package:doctor_appointment/design/common/text_extention.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:validators/validators.dart';
 
 import '../../../../design/widget/round_button.dart';
 import '../../../../design/widget/text_form_base.dart';
-import '../../../core/hook/hook_input_controller.dart';
 import '../../../core/validators/email.dart';
-import '../../../core/validators/name.dart';
+import '../enum/auth_status.dart';
 import '../providers/auth_providers.dart';
 
 class SignInScreen extends HookConsumerWidget with AppRoutingMixin {
@@ -34,6 +32,7 @@ class SignInScreen extends HookConsumerWidget with AppRoutingMixin {
     final obscureText = useState<bool>(true);
 
     final authNotifier = ref.read(authNotifierProvider.notifier);
+    final authState = ref.watch(authNotifierProvider);
 
     useEffect(() {
       mEmailTextController
@@ -49,11 +48,15 @@ class SignInScreen extends HookConsumerWidget with AppRoutingMixin {
           mFormState.value = mFormState.value.copyWith(
               password: Password.dirty(mPasswordTextController.text.trim()));
         });
-      return () {
-        // mEmailTextController.dispose();
-        // mPasswordTextController.dispose();
-      };
+      return () {};
     }, []);
+
+    useEffect(() {
+      if (authState.status == AuthStatus.authenticated) {
+        goOnBoard(context);
+      }
+      return;
+    }, [authState.status]);
 
     return Scaffold(
       appBar: AppBar(

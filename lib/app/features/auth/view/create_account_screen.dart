@@ -14,7 +14,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../enum/auth_status.dart';
 import '../form_state/form_state.dart';
+import '../providers/auth_providers.dart';
 
 class CreateAccountScreen extends StatefulHookConsumerWidget {
   const CreateAccountScreen({super.key});
@@ -51,6 +53,9 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen>
 
     final mFormState = useState(FormAuthState.initial());
 
+    final authNotifier = ref.read(authNotifierProvider.notifier);
+    final authState = ref.watch(authNotifierProvider);
+
     useEffect(() {
       mNameTextController
         ..text = mFormState.value.name.value
@@ -80,13 +85,17 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen>
                   password: mPasswordTextController.text.trim(),
                   value: mRePasswordTextController.text.trim()));
         });
-      return () {
-        // mNameTextController.dispose();
-        // mEmailTextController.dispose();
-        // mPasswordTextController.dispose();
-        // mRePasswordTextController.dispose();
-      };
+      return () {};
     }, []);
+
+    useEffect(() {
+      if (authState.status == AuthStatus.authenticated) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          context.go(AppPage.fillProfile.getPath);
+        });
+      }
+      return;
+    }, [authState.status]);
 
     return Scaffold(
       appBar: AppBar(
@@ -196,7 +205,16 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen>
                     RoundButton(
                         title: "CREATE ACCOUNT",
                         onPressed: () {
-                          context.push(AppPage.fillProfile.getPath);
+                          if (_formKey.currentState!.validate()) {
+                            final userName = mNameTextController.text.trim();
+                            final email = mEmailTextController.text.trim();
+                            final password =
+                                mPasswordTextController.text.trim();
+                            authNotifier.createAccount(
+                                name: userName,
+                                email: email,
+                                password: password); // Call the login function
+                          }
                         }),
                     const SizedBox(
                       height: 24,

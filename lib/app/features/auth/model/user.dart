@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class UserModel {
-  final String? name;
+  final String? userName;
   final String? email;
   final String? avatar;
   final String? uid;
@@ -10,16 +10,16 @@ class UserModel {
   UserModel(
       {required this.uid,
       this.displayName,
-      this.name,
+      this.userName,
       this.email,
       this.avatar});
 
   @override
-  String toString() => 'name $name email $email avatar $avatar';
+  String toString() => 'name $userName email $email avatar $avatar';
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'name': name,
+      'name': userName,
       'email': email,
       'avatar': avatar,
     };
@@ -33,7 +33,7 @@ class UserModel {
     String? displayName,
   }) {
     return UserModel(
-      name: name ?? this.name,
+      userName: name ?? this.userName,
       email: email ?? this.email,
       avatar: avatar ?? this.avatar,
       uid: uid ?? this.uid,
@@ -44,7 +44,7 @@ class UserModel {
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       uid: map['uid'] as String,
-      name: map['name'] as String,
+      userName: map['name'] as String,
       email: map['email'] as String,
       avatar: map['avatar'] != null ? map['avatar'] as String : null,
     );

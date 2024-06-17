@@ -1,6 +1,7 @@
 import 'package:doctor_appointment/design/common/color_extention.dart';
 import 'package:doctor_appointment/design/common/text_extention.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class MainView extends ConsumerWidget {

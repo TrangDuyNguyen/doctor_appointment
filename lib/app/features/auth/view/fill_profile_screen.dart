@@ -14,7 +14,6 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import '../../../../design/utils/dialog_utils.dart';
 import '../../../../design/widget/bottom_sheet.dart';
 import '../../../../design/widget/text_form_base.dart';
-import '../../../core/hook/hook_input_controller.dart';
 import '../../../core/validators/email.dart';
 import '../../../core/validators/name.dart';
 import '../../../core/validators/phone.dart';
@@ -82,13 +81,7 @@ class FillProfileScreen extends HookWidget with AppRoutingMixin {
         });
 
       // Dispose các controller khi widget unmount
-      return () {
-        // mNameTextController.dispose();
-        // mBirthDayTextController.dispose();
-        // mEmailTextController.dispose();
-        // mPhoneController.dispose();
-        // mGenderTextController.dispose();
-      };
+      return () {};
     }, []);
 
     return Scaffold(
@@ -110,7 +103,9 @@ class FillProfileScreen extends HookWidget with AppRoutingMixin {
         ),
         actions: [
           TextButton(
-              onPressed: () {},
+              onPressed: () {
+                goOnBoard(context);
+              },
               child: Text(
                 "Skip",
                 style: context.appTextStyles.labelMedium.bold

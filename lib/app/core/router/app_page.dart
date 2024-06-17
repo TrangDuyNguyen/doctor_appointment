@@ -1,4 +1,5 @@
 enum AppPage {
+  authPage,
   splash,
   welcome,
   onboard,
@@ -9,6 +10,7 @@ enum AppPage {
 
 extension AppPageEx on AppPage {
   static const Map<AppPage, String> _pageNames = {
+    AppPage.authPage: 'authPage',
     AppPage.onboard: 'main',
     AppPage.splash: 'splash',
     AppPage.welcome: 'welcome',
@@ -22,6 +24,7 @@ extension AppPageEx on AppPage {
     AppPage.onboard: '/main',
 
     /// Auth
+    AppPage.authPage: '/authPage',
     AppPage.splash: '/splash',
     AppPage.welcome: '/welcome',
     AppPage.signIn: '/signIn',
