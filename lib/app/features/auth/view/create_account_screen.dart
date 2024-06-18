@@ -200,7 +200,23 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen>
                               ?.text();
                         }),
                     const SizedBox(
-                      height: 32,
+                      height: 16,
+                    ),
+                    Visibility(
+                        visible: authState.status == AuthStatus.authenticating,
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              context.appColors.secondaryColor),
+                        )),
+                    Visibility(
+                        visible: authState.status == AuthStatus.authenticatedError,
+                        child: Text(
+                          authState.errorMessage ?? "",
+                          style: context.appTextStyles.titleSmall
+                              .copyWith(color: context.appColors.error),
+                        )),
+                    const SizedBox(
+                      height: 16,
                     ),
                     RoundButton(
                         title: "CREATE ACCOUNT",
