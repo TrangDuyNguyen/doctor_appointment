@@ -4,6 +4,7 @@ import 'package:doctor_appointment/app/features/auth/form_state/form_state.dart'
 import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extention.dart';
 import 'package:doctor_appointment/design/common/text_extention.dart';
+import 'package:doctor_appointment/design/utils/space_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -54,7 +55,7 @@ class SignInScreen extends HookConsumerWidget with AppRoutingMixin {
     useEffect(() {
       if (authState.status == AuthStatus.authenticated) {
         goOnBoard(context);
-      }
+      } else if (authState.status == AuthStatus.unauthenticated) {}
       return;
     }, [authState.status]);
 
@@ -130,7 +131,23 @@ class SignInScreen extends HookConsumerWidget with AppRoutingMixin {
                       },
                     ),
                     const SizedBox(
-                      height: 32,
+                      height: 16,
+                    ),
+                    Visibility(
+                        visible: authState.status == AuthStatus.authenticating,
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              context.appColors.secondaryColor),
+                        )),
+                    Visibility(
+                        visible: authState.status == AuthStatus.authenticatedError,
+                        child: Text(
+                          authState.errorMessage ?? "",
+                          style: context.appTextStyles.titleSmall
+                              .copyWith(color: context.appColors.error),
+                        )),
+                    const SizedBox(
+                      height: 16,
                     ),
                     RoundButton(
                         title: "SIGN IN",

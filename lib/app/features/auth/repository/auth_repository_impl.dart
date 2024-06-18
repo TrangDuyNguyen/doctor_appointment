@@ -28,7 +28,8 @@ class AuthRepositoryImpl implements AuthRepository {
       return newState;
     } on FirebaseAuthException catch (e) {
       AuthState errorState = AuthState(
-        status: AuthStatus.unauthenticated,
+        status: AuthStatus.authenticatedError,
+        errorMessage: "Failed to create. Please check your credentials."
       );
       return errorState;
     }
@@ -52,7 +53,8 @@ class AuthRepositoryImpl implements AuthRepository {
       return newState;
     } on FirebaseAuthException catch (e) {
       AuthState errorState = AuthState(
-        status: AuthStatus.unauthenticated,
+        status: AuthStatus.authenticatedError,
+        errorMessage: "Failed to login. Please check your credentials."
       );
       return errorState;
     }
