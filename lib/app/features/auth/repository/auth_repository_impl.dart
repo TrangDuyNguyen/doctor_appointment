@@ -1,6 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctor_appointment/app/features/auth/model/auth_model.dart';
-import 'package:doctor_appointment/app/features/auth/model/user.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../user/model/user_model.dart';
 import '../enum/auth_status.dart';
 import '../form_state/auth_state.dart';
 import 'auth_repository.dart';
@@ -8,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore _fireStoreDB = FirebaseFirestore.instance;
   AuthRepositoryImpl();
 
   @override
@@ -20,6 +22,21 @@ class AuthRepositoryImpl implements AuthRepository {
         password: auth.password ?? "",
       );
       User user = userCredential.user!;
+
+      await _fireStoreDB.collection('users').doc(user.uid).set({
+        'uid': user.uid,
+        'name': auth.username,
+        'email': user.email,
+        'avatar': '',
+        'displayName': user.displayName,
+        'dateOfBirth':  Timestamp.fromDate(DateTime.now()),
+        'phone': '',
+        'gender': '',
+        'dateCreate':  Timestamp.fromDate(DateTime.now()),
+        'address': '',
+        // Add other user details here if necessary
+      });
+
       AuthState newState = AuthState(
         status: AuthStatus.authenticated,
         user: UserModel(uid: user.uid),
@@ -28,9 +45,8 @@ class AuthRepositoryImpl implements AuthRepository {
       return newState;
     } on FirebaseAuthException catch (e) {
       AuthState errorState = AuthState(
-        status: AuthStatus.authenticatedError,
-        errorMessage: "Failed to create. Please check your credentials."
-      );
+          status: AuthStatus.authenticatedError,
+          errorMessage: "Failed to create. Please check your credentials.");
       return errorState;
     }
   }
@@ -53,9 +69,8 @@ class AuthRepositoryImpl implements AuthRepository {
       return newState;
     } on FirebaseAuthException catch (e) {
       AuthState errorState = AuthState(
-        status: AuthStatus.authenticatedError,
-        errorMessage: "Failed to login. Please check your credentials."
-      );
+          status: AuthStatus.authenticatedError,
+          errorMessage: "Failed to login. Please check your credentials.");
       return errorState;
     }
   }

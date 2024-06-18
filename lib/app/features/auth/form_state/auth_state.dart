@@ -1,5 +1,4 @@
-import 'package:doctor_appointment/app/features/auth/model/user.dart';
-
+import '../../user/model/user_model.dart';
 import '../enum/auth_status.dart';
 
 class AuthState {

@@ -91,7 +91,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen>
     useEffect(() {
       if (authState.status == AuthStatus.authenticated) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          context.go(AppPage.fillProfile.getPath);
+          context.push(AppPage.fillProfile.getPath);
         });
       }
       return;

@@ -17,7 +17,7 @@ import '../../../../design/widget/text_form_base.dart';
 import '../../../core/validators/email.dart';
 import '../../../core/validators/name.dart';
 import '../../../core/validators/phone.dart';
-import '../form_state/fill_profile_form_state.dart';
+import '../../auth/form_state/fill_profile_form_state.dart';
 import 'package:intl/intl.dart';
 
 class FillProfileScreen extends HookWidget with AppRoutingMixin {

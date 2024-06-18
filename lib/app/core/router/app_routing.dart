@@ -1,5 +1,5 @@
 import 'package:doctor_appointment/app/features/auth/view/auth_view.dart';
-import 'package:doctor_appointment/app/features/auth/view/fill_profile_screen.dart';
+import 'package:doctor_appointment/app/features/user/view/fill_profile_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/view/create_account_screen.dart';
