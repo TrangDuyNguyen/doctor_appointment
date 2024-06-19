@@ -1,5 +1,6 @@
 import 'package:doctor_appointment/app/core/validators/email.dart';
 import 'package:doctor_appointment/app/core/validators/phone.dart';
+import 'package:doctor_appointment/app/features/user/model/user_model.dart';
 import 'package:formz/formz.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -26,19 +27,19 @@ class FillProfileFormState with FormzMixin {
     );
   }
 
-  factory FillProfileFormState.initial() {
+  factory FillProfileFormState.initial(UserModel? userModel) {
     // if (AppConfig.instance.isDebugMode) {
-    return FillProfileFormState.fake();
+    //return FillProfileFormState.fake();
     // }
-    // return FillProfileFormState(
-    // avatar: XFile(''),
-    // name: const Name.pure(),
-    // email: const Email.pure(),
-    // dateOfBirth: DateTime.now(),
-    // phone: const Phone.pure(),
-    // gender: '',
-    // status: FormzSubmissionStatus.initial,
-    // );
+    return FillProfileFormState(
+      avatar: XFile(''),
+      name: Name.pure(userModel?.displayName ?? ""),
+      email: Email.pure(userModel?.email ?? ""),
+      dateOfBirth: userModel?.dateOfBirth ?? DateTime.now(),
+      phone: Phone.pure(value: userModel?.phone ?? ""),
+      gender: userModel?.gender,
+      status: FormzSubmissionStatus.initial,
+    );
   }
 
   FillProfileFormState({

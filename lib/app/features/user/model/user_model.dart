@@ -5,7 +5,7 @@ class UserModel {
   final String? email;
   final String? avatar;
   final String? uid;
-  final String? displayName;
+  final String? fullName;
   final DateTime? dateOfBirth;
   final String? phone;
   final String? gender;
@@ -14,7 +14,7 @@ class UserModel {
 
   UserModel({
     required this.uid,
-    this.displayName,
+    this.fullName,
     this.userName,
     this.email,
     this.avatar,
@@ -28,13 +28,15 @@ class UserModel {
   @override
   String toString() => 'name $userName email $email avatar $avatar';
 
+  String get displayName => fullName?.isNotEmpty == true ? fullName! : userName ?? '';
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'uid': uid,
       'name': userName,
       'email': email,
       'avatar': avatar,
-      'displayName': displayName,
+      'fullName': fullName,
       'dateOfBirth': dateOfBirth?.toIso8601String(),
       'phone': phone,
       'gender': gender,
@@ -48,7 +50,7 @@ class UserModel {
     String? email,
     String? avatar,
     String? uid,
-    String? displayName,
+    String? fullName,
     DateTime? dateOfBirth,
     String? phone,
     String? gender,
@@ -60,7 +62,7 @@ class UserModel {
       email: email ?? this.email,
       avatar: avatar ?? this.avatar,
       uid: uid ?? this.uid,
-      displayName: displayName ?? this.displayName,
+      fullName: fullName ?? this.fullName,
       dateOfBirth: dateOfBirth ?? this.dateOfBirth,
       phone: phone ?? this.phone,
       gender: gender ?? this.gender,
@@ -75,7 +77,7 @@ class UserModel {
       userName: map['name'] as String,
       email: map['email'] as String,
       avatar: map['avatar'] != null ? map['avatar'] as String : null,
-      displayName: map['displayName'] != null ? map['displayName'] as String : null,
+      fullName: map['fullName'] != null ? map['fullName'] as String : null,
       dateOfBirth: map['dateOfBirth'] != null ? DateTime.parse(map['dateOfBirth'] as String) : null,
       phone: map['phone'] != null ? map['phone'] as String : null,
       gender: map['gender'] != null ? map['gender'] as String : null,

@@ -1,31 +1,33 @@
+import 'dart:async';
+
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../features/user/model/user_model.dart';
+
 class AppStorage {
-  // ignore: unused_field
   Box? _box;
 
-  /// for initialling app local storage
+  /// for initializing app local storage
   Future<void> initAppStorage() async {
     await Hive.initFlutter();
     // TODO: add your storage name here
-    _box = await Hive.openBox('hello world');
+    _box = await Hive.openBox('user_storage');
   }
 
-  // example of storing & getting value
+  /// for storing user data
+  Future<void> saveUser(UserModel user) async {
+    await _box?.put('user', user.toMap());
+  }
 
-  /// for storing uploaded string value
-  // final String _helloWorld = 'helloWorld';
-
-  // /// for getting string from box
-  // String? getHelloWorld() {
-  //   return _box?.get(_helloWorld) as String?;
-  // }
-
-  // /// for storing helloWorld to app
-  // Future<void> putHelloWorld(String helloWorld) async {
-  //   await _box?.put(_helloWorld, helloWorld);
-  // }
+  /// for getting user data
+  UserModel? getUser() {
+    final userData = _box?.get('user');
+    if (userData != null) {
+      return UserModel.fromMap(userData);
+    }
+    return null;
+  }
 
   /// for clearing all data in box
   Future<void> clearAllData() async {
@@ -34,7 +36,7 @@ class AppStorage {
 }
 
 final appStorageProvider = Provider<AppStorage>(
-  (_) {
+      (_) {
     throw UnimplementedError();
   },
 );

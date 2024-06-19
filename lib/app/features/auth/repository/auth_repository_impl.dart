@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctor_appointment/app/features/auth/model/auth_model.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../../core/local_storage/app_storage.dart';
 import '../../user/model/user_model.dart';
 import '../enum/auth_status.dart';
 import '../form_state/auth_state.dart';
@@ -10,43 +11,49 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthRepositoryImpl implements AuthRepository {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _fireStoreDB = FirebaseFirestore.instance;
-  AuthRepositoryImpl();
+  final AppStorage _appStorage;
+
+  AuthRepositoryImpl(this._appStorage);
 
   @override
   Future<AuthState> createAccount({required AuthModel auth}) async {
-    // TODO: implement createAccount
     try {
-      UserCredential userCredential =
-          await _firebaseAuth.createUserWithEmailAndPassword(
+      UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: auth.email ?? "",
         password: auth.password ?? "",
       );
       User user = userCredential.user!;
 
-      await _fireStoreDB.collection('users').doc(user.uid).set({
-        'uid': user.uid,
-        'name': auth.username,
-        'email': user.email,
-        'avatar': '',
-        'displayName': user.displayName,
-        'dateOfBirth':  Timestamp.fromDate(DateTime.now()),
-        'phone': '',
-        'gender': '',
-        'dateCreate':  Timestamp.fromDate(DateTime.now()),
-        'address': '',
-        // Add other user details here if necessary
-      });
+      await _appStorage.clearAllData();
+
+      UserModel newUser = UserModel(
+        uid: user.uid,
+        userName: auth.username,
+        email: user.email,
+        fullName: user.displayName,
+        dateOfBirth: DateTime.now(),
+        phone: '',
+        gender: '',
+        dateCreate: DateTime.now(),
+        address: '',
+      );
+
+      await _fireStoreDB.collection('users').doc(user.uid).set(newUser.toMap());
+
+      // Save the user to local storage
+      await _appStorage.saveUser(newUser);
 
       AuthState newState = AuthState(
         status: AuthStatus.authenticated,
-        user: UserModel(uid: user.uid),
+        user: newUser,
         accessToken: "",
       );
       return newState;
     } on FirebaseAuthException catch (e) {
       AuthState errorState = AuthState(
-          status: AuthStatus.authenticatedError,
-          errorMessage: "Failed to create. Please check your credentials.");
+        status: AuthStatus.authenticatedError,
+        errorMessage: "Failed to create. Please check your credentials.",
+      );
       return errorState;
     }
   }
@@ -83,5 +90,6 @@ class AuthRepositoryImpl implements AuthRepository {
 }
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepositoryImpl();
+  final appStorage = ref.read(appStorageProvider);
+  return AuthRepositoryImpl(appStorage);
 });

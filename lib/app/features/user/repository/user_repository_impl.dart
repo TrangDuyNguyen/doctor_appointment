@@ -82,8 +82,8 @@ class UserRepositoryImpl extends UserRepository {
     try {
       QuerySnapshot querySnapshot = await _fireStoreDB
           .collection('users')
-          .where('displayName', isGreaterThanOrEqualTo: query)
-          .where('displayName', isLessThanOrEqualTo: '$query\uf8ff')
+          .where('fullName', isGreaterThanOrEqualTo: query)
+          .where('fullName', isLessThanOrEqualTo: '$query\uf8ff')
           .get();
       return querySnapshot.docs
           .map((doc) => UserModel.fromMap(doc.data() as Map<String, dynamic>))

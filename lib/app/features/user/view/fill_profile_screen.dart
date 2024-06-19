@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:doctor_appointment/app/core/router/app_routing_mixin.dart';
+import 'package:doctor_appointment/app/features/user/model/user_model.dart';
+import 'package:doctor_appointment/app/features/user/providers/user_providers.dart';
 import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extention.dart';
 import 'package:doctor_appointment/design/common/text_extention.dart';
@@ -8,6 +10,7 @@ import 'package:doctor_appointment/design/widget/round_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
@@ -17,14 +20,14 @@ import '../../../../design/widget/text_form_base.dart';
 import '../../../core/validators/email.dart';
 import '../../../core/validators/name.dart';
 import '../../../core/validators/phone.dart';
-import '../../auth/form_state/fill_profile_form_state.dart';
+import '../state/fill_profile_form_state.dart';
 import 'package:intl/intl.dart';
 
-class FillProfileScreen extends HookWidget with AppRoutingMixin {
+class FillProfileScreen extends HookConsumerWidget with AppRoutingMixin {
   FillProfileScreen({super.key});
   final _formKey = GlobalKey<FormState>();
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final mNameTextController = useTextEditingController();
     final mFocusName = useFocusNode();
 
@@ -40,7 +43,10 @@ class FillProfileScreen extends HookWidget with AppRoutingMixin {
     final mGenderTextController = useTextEditingController();
     final mGenderFocus = useFocusNode();
 
-    final mFormState = useState(FillProfileFormState.initial());
+    final userNotifier = ref.read(userNotifierProvider.notifier);
+    final userState = ref.watch(userNotifierProvider);
+
+    final mFormState = useState(FillProfileFormState.initial(userState.user));
 
     useEffect(() {
       mNameTextController
@@ -403,7 +409,18 @@ class FillProfileScreen extends HookWidget with AppRoutingMixin {
                       content:
                           "Your account is ready to use. You will \nbe redirected to the Home page in a \nfew seconds...",
                       onConfirm: (ctx) {
-                        ctx.pop();
+                        if (_formKey.currentState!.validate()) {
+                          UserModel newUser = UserModel(
+                            uid: userState.user?.uid,
+                            fullName: mFormState.value.name.value,
+                            email: mFormState.value.email.value,
+                            dateOfBirth: mFormState.value.dateOfBirth,
+                            phone: mFormState.value.phone.value,
+                            gender: mFormState.value.gender,
+                          );
+
+                          userNotifier.updateUser(newUser);
+                        }
                       },
                     );
                   }),
