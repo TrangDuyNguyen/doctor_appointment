@@ -78,6 +78,12 @@ class UserStateNotifier extends StateNotifier<UserState> {
     state = userState;
   }
 
+  Future<void> deleteUser(String userId) async {
+    state = state.copyWith(status: UserStatus.loading);
+    UserState userState = await _repo.deleteUser(userId: userId);
+    state = userState;
+  }
+
   FutureOr<UserModel?> getUserById(String userId) async {
     state = state.copyWith(status: UserStatus.loading);
     UserState userState = await _repo.getUserById(userId: userId);

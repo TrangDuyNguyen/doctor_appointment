@@ -71,18 +71,21 @@ class UserModel {
     );
   }
 
-  factory UserModel.fromMap(Map<String, dynamic> map) {
+  factory UserModel.fromMap(Map<String, dynamic>? map) {
+    if (map == null) {
+      throw ArgumentError('Invalid user data');
+    }
     return UserModel(
       uid: map['uid'] as String,
-      userName: map['name'] as String,
-      email: map['email'] as String,
-      avatar: map['avatar'] != null ? map['avatar'] as String : null,
-      fullName: map['fullName'] != null ? map['fullName'] as String : null,
+      userName: map['name'] as String?,
+      email: map['email'] as String?,
+      avatar: map['avatar'] as String?,
+      fullName: map['fullName'] as String?,
       dateOfBirth: map['dateOfBirth'] != null ? DateTime.parse(map['dateOfBirth'] as String) : null,
-      phone: map['phone'] != null ? map['phone'] as String : null,
-      gender: map['gender'] != null ? map['gender'] as String : null,
+      phone: map['phone'] as String?,
+      gender: map['gender'] as String?,
       dateCreate: map['dateCreate'] != null ? DateTime.parse(map['dateCreate'] as String) : null,
-      address: map['address'] != null ? map['address'] as String : null,
+      address: map['address'] as String?,
     );
   }
 

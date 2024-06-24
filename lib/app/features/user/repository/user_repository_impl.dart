@@ -58,11 +58,15 @@ class UserRepositoryImpl extends UserRepository {
   Future<UserState> getUserById({required String userId}) async {
     try {
       DocumentSnapshot doc =
-          await _fireStoreDB.collection('users').doc(userId).get();
-      UserState newState = UserState(
-          status: UserStatus.success,
-          user: UserModel.fromMap(doc.data() as Map<String, dynamic>));
-      return newState;
+      await _fireStoreDB.collection('users').doc(userId).get();
+      if (doc.exists && doc.data() != null) {
+        UserState newState = UserState(
+            status: UserStatus.success,
+            user: UserModel.fromMap(doc.data() as Map<String, dynamic>));
+        return newState;
+      } else {
+        throw Exception('User not found');
+      }
     } on FirebaseException catch (e) {
       throw Exception('Failed to create user: ${e.message}');
     }

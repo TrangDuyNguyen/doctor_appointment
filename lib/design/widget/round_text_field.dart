@@ -1,4 +1,4 @@
-import 'package:doctor_appointment/design/common/color_extention.dart';
+import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:flutter/material.dart';
 
 class RoundTextField extends StatelessWidget {

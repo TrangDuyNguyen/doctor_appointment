@@ -1,5 +1,5 @@
 import 'package:doctor_appointment/design/common/app_context.dart';
-import 'package:doctor_appointment/design/common/color_extention.dart';
+import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/widget/round_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

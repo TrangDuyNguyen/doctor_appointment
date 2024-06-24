@@ -1,4 +1,4 @@
-import 'package:doctor_appointment/design/common/text_extention.dart';
+import 'package:doctor_appointment/design/common/text_extension.dart';
 import 'package:flutter/material.dart';
 
 class AppColors {
