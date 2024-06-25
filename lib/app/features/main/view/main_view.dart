@@ -17,6 +17,15 @@ class MainView extends HookConsumerWidget with AppRoutingMixin {
     final tabController = useTabController(initialLength: 4);
     final selectedTab = useState(0);
 
+    useEffect(() {
+      void listener() {
+        selectedTab.value = tabController.index;
+      }
+
+      tabController.addListener(listener);
+      return () => tabController.removeListener(listener);
+    }, [tabController]);
+
     return Scaffold(
       body: TabBarView(
         controller: tabController,
