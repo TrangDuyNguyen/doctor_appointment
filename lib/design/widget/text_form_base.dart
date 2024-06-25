@@ -74,6 +74,7 @@ class BaseTextInputField extends HookWidget {
     return TextFormField(
       controller: textController.value,
       keyboardType: textInputType,
+      focusNode: focusNode,
       obscureText: obscureText.value,
       readOnly: readOnly,
       onTap: onTap,
