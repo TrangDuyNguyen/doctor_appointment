@@ -1,19 +1,33 @@
+import 'package:carousel_slider/carousel_controller.dart';
+import 'package:doctor_appointment/app/features/doctor_appointment/model/doctor_model.dart';
+import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/common/text_extension.dart';
 import 'package:doctor_appointment/design/utils/space_utils.dart';
+import 'package:doctor_appointment/design/widget/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../design/widget/shimmer_view.dart';
+import '../providers/home_providers.dart';
 import '../widget/appointment_card.dart';
 
 class HomeView extends HookConsumerWidget {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchController = useTextEditingController();
     final searchFocusNote = useFocusNode();
+
+    final CarouselController _mPopularDoctorSliderController =
+        CarouselController();
+
+    final upcomingDoctorState = ref.watch(upcomingDoctorNotifierProvider);
+    final topDoctorState = ref.watch(topDoctorNotifierProvider);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -165,27 +179,43 @@ class HomeView extends HookConsumerWidget {
                   ),
                 ],
               ).paddingTopSpace(SpaceType.medium),
-              SizedBox(
-                height: 160,
-                child: PageView(
-                  children: const [
-                    AppointmentCard(
-                      doctorName: "DR Williem Smith",
-                      specialty: "Dentist",
-                      hospital: "Royal Hospital",
-                      date: "Sep 10, 2023",
-                      time: "05:00 PM",
+              upcomingDoctorState.isLoading
+                  ? const ShimmerView().paddingTopSpace(SpaceType.medium)
+                  : upcomingDoctorState.errorMessage != null
+                      ? const ShimmerView().paddingTopSpace(SpaceType.medium)
+                      : SizedBox(
+                          height: 160,
+                          child: SliderWidget<DoctorModel>(
+                              autoPlay: false,
+                              carouselController:
+                                  _mPopularDoctorSliderController,
+                              aspectRatio: 2.4,
+                              itemBuilder: (context, item) {
+                                return AppointmentCard(
+                                    doctorName: item.fullName ?? "",
+                                    specialty: item.specialist ?? "",
+                                    hospital: item.hospital ?? "",
+                                    date: item.workingDays ?? "",
+                                    time: item.workingHours ?? "");
+                              },
+                              items: upcomingDoctorState.doctors),
+                        ).paddingTopSpace(SpaceType.medium),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Doctor Speciality ",
+                    style: context.appTextStyles.titleMedium.bold,
+                  ),
+                  InkWell(
+                    onTap: () {},
+                    child: Text(
+                      "SEE ALL",
+                      style: context.appTextStyles.titleMedium.bold
+                          .copyWith(color: context.appColors.brandPrimary),
                     ),
-                    AppointmentCard(
-                      doctorName: "DR Jane Doe",
-                      specialty: "Cardiologist",
-                      hospital: "City Hospital",
-                      date: "Sep 12, 2023",
-                      time: "03:00 PM",
-                    ),
-                    // Add more AppointmentCard widgets here
-                  ],
-                ),
+                  ),
+                ],
               ).paddingTopSpace(SpaceType.medium),
             ],
           ),

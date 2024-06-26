@@ -48,77 +48,62 @@ class AppointmentCard extends StatelessWidget {
                   ),
                 ),
               ).paddingRightSpace(SpaceType.small),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      doctorName,
+                      style: context.appTextStyles.titleMedium.bold
+                          .copyWith(color: context.appColors.whiteColor),
+                    ),
+                    const SizedBox(height: 4.0),
+                    Text(
+                      '$specialty | $hospital',
+                      style: context.appTextStyles.labelSmall
+                          .copyWith(color: context.appColors.whiteColor),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12.0),
+          Column(
+            children: [
+              Row(
                 children: [
+                  SizedBox(
+                      height: 14,
+                      width: 14,
+                      child:
+                          Image.asset("lib/design/assets/icons/calender.png")),
+                  const SizedBox(width: 8.0),
                   Text(
-                    doctorName,
-                    style: context.appTextStyles.titleMedium.bold
-                        .copyWith(color: context.appColors.whiteColor),
-                  ),
-                  const SizedBox(height: 4.0),
-                  Text(
-                    '$specialty | $hospital',
-                    style: context.appTextStyles.titleSmall
+                    date,
+                    style: context.appTextStyles.labelSmall
                         .copyWith(color: context.appColors.whiteColor),
                   ),
                 ],
               ),
-              const Spacer(),
-            ],
-          ),
-          const SizedBox(height: 12.0),
-          Row(
-            children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                decoration: BoxDecoration(
-                  color: context.appColors.grayColorMedium.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: Image.asset(
-                            "lib/design/assets/icons/calender.png")),
-                    const SizedBox(width: 8.0),
-                    Text(
-                      date,
-                      style: context.appTextStyles.titleSmall
-                          .copyWith(color: context.appColors.whiteColor),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 16.0),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                decoration: BoxDecoration(
-                  color: context.appColors.grayColorMedium.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: Image.asset(
-                            "lib/design/assets/icons/clock_card.png")),
-                    const SizedBox(width: 8.0),
-                    Text(
-                      time,
-                      style: context.appTextStyles.titleSmall
-                          .copyWith(color: context.appColors.whiteColor),
-                    ),
-                  ],
-                ),
+              const SizedBox(height: 16.0),
+              Row(
+                children: [
+                  SizedBox(
+                      height: 14,
+                      width: 14,
+                      child: Image.asset(
+                          "lib/design/assets/icons/clock_card.png")),
+                  const SizedBox(width: 8.0),
+                  Text(
+                    time,
+                    style: context.appTextStyles.labelSmall
+                        .copyWith(color: context.appColors.whiteColor),
+                  ),
+                ],
               ),
             ],
-          ),
+          )
         ],
       ),
     );
