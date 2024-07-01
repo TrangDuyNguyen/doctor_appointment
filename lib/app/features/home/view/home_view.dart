@@ -1,29 +1,68 @@
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:doctor_appointment/app/features/doctor_appointment/model/doctor_model.dart';
-import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/common/text_extension.dart';
 import 'package:doctor_appointment/design/utils/space_utils.dart';
 import 'package:doctor_appointment/design/widget/carousel_slider.dart';
+import 'package:doctor_appointment/design/widget/chip_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../design/widget/shimmer_view.dart';
+import '../../doctor_appointment/model/speciality_model.dart';
 import '../providers/home_providers.dart';
 import '../widget/appointment_card.dart';
 
 class HomeView extends HookConsumerWidget {
-  const HomeView({
+  HomeView({
     Key? key,
   }) : super(key: key);
+
+  final List<SpecialityModel> specialityList = [
+    SpecialityModel(
+        speciality: 'General', icon: 'lib/design/assets/icons/general.png'),
+    SpecialityModel(
+        speciality: 'Dentist', icon: 'lib/design/assets/icons/dentist.png'),
+    SpecialityModel(
+        speciality: 'Ontology', icon: 'lib/design/assets/icons/otology.png'),
+    SpecialityModel(
+        speciality: 'Ophthalmology',
+        icon: 'lib/design/assets/icons/ophthalmology.png'),
+    SpecialityModel(
+        speciality: 'Intestine', icon: 'lib/design/assets/icons/intestine.png'),
+    SpecialityModel(
+        speciality: 'Pediatric', icon: 'lib/design/assets/icons/pediatric.png'),
+    SpecialityModel(
+        speciality: 'Herbal', icon: 'lib/design/assets/icons/herbal.png'),
+    SpecialityModel(
+        speciality: 'More', icon: 'lib/design/assets/icons/more.png'),
+  ];
+
+  final List<String> listChip = [
+    "All",
+    "General",
+    "Gastroenteritis",
+    "Cardiologist",
+    "Orthopaedic",
+    "Neurologist",
+    "Otology",
+    "Dentist",
+    "Rhinology",
+    "Urologist",
+    "Otology",
+    "Pulmonologist",
+    "Neurologist",
+    "Gastroenteritis"
+  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchController = useTextEditingController();
     final searchFocusNote = useFocusNode();
+    final selectedChipIndex = useState(0);
 
-    final CarouselController _mPopularDoctorSliderController =
+    final CarouselController mPopularDoctorSliderController =
         CarouselController();
 
     final upcomingDoctorState = ref.watch(upcomingDoctorNotifierProvider);
@@ -34,7 +73,7 @@ class HomeView extends HookConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
         child: SafeArea(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
                 children: [
@@ -178,18 +217,18 @@ class HomeView extends HookConsumerWidget {
                     ),
                   ),
                 ],
-              ).paddingTopSpace(SpaceType.medium),
+              ).paddingTopSpace(SpaceType.large),
               upcomingDoctorState.isLoading
                   ? const ShimmerView().paddingTopSpace(SpaceType.medium)
                   : upcomingDoctorState.errorMessage != null
                       ? const ShimmerView().paddingTopSpace(SpaceType.medium)
-                      : SizedBox(
-                          height: 160,
-                          child: SliderWidget<DoctorModel>(
+                      : SliderWidget<DoctorModel>(
                               autoPlay: false,
                               carouselController:
-                                  _mPopularDoctorSliderController,
-                              aspectRatio: 2.4,
+                                  mPopularDoctorSliderController,
+                              enlargeCenterPage: true,
+                              aspectRatio: 2 / 0.84,
+                              viewportFraction: 1,
                               itemBuilder: (context, item) {
                                 return AppointmentCard(
                                     doctorName: item.fullName ?? "",
@@ -198,8 +237,8 @@ class HomeView extends HookConsumerWidget {
                                     date: item.workingDays ?? "",
                                     time: item.workingHours ?? "");
                               },
-                              items: upcomingDoctorState.doctors),
-                        ).paddingTopSpace(SpaceType.medium),
+                              items: upcomingDoctorState.doctors)
+                          .paddingTopSpace(SpaceType.medium),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -216,7 +255,62 @@ class HomeView extends HookConsumerWidget {
                     ),
                   ),
                 ],
-              ).paddingTopSpace(SpaceType.medium),
+              ).paddingTopSpace(SpaceType.large),
+              GridView.builder(
+                  shrinkWrap: true,
+                  itemCount: specialityList.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    mainAxisSpacing: 16.0,
+                    crossAxisSpacing: 16.0,
+                  ),
+                  itemBuilder: (context, index) {
+                    var speciality = specialityList[index];
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.blue.withOpacity(0.1),
+                          child: Image.asset(speciality.icon ?? "",
+                              width: 30, height: 30),
+                        ),
+                        const SizedBox(height: 8),
+                        Expanded(
+                          child: Text(
+                            speciality.speciality ?? "",
+                            style: context.appTextStyles.labelSmall,
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ),
+                      ],
+                    );
+                  }).paddingTopSpace(SpaceType.medium),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Top Doctors",
+                    style: context.appTextStyles.titleMedium.bold,
+                  ),
+                  InkWell(
+                    onTap: () {},
+                    child: Text(
+                      "SEE ALL",
+                      style: context.appTextStyles.titleMedium.bold
+                          .copyWith(color: context.appColors.brandPrimary),
+                    ),
+                  ),
+                ],
+              ).paddingTopSpace(SpaceType.large),
+              ChipsHorizontalWidget(
+                  chipLabels: listChip,
+                  selectedChipIndex: selectedChipIndex.value,
+                  onChipSelected: (index) {
+                    selectedChipIndex.value = index;
+                  }),
             ],
           ),
         ),

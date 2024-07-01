@@ -29,7 +29,7 @@ class MainView extends HookConsumerWidget with AppRoutingMixin {
     return Scaffold(
       body: TabBarView(
         controller: tabController,
-        children: const [
+        children: [
           HomeView(),
           ScheduledAppointmentsView(),
           DoctorAppointmentView(),

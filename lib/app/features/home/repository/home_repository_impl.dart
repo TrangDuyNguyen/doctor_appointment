@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:doctor_appointment/app/features/doctor_appointment/model/doctor_model.dart';
+import 'package:doctor_appointment/app/features/doctor_appointment/model/speciality_model.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'home_repository.dart';
 
@@ -148,7 +149,7 @@ class HomeRepositoryImpl extends HomeRepository {
       "address": "789 Willow St, Springfield",
       "hospital": "Metro Hospital",
       "specialist": "Radiologist",
-      "workingDays": "Mon-Thu",
+      "workingDays": "Mon-Thu-Mon-Fri-Thu-Sun-Mon-Fri-Thu-Sun",
       "workingHours": "07:00 AM - 04:00 PM"
     }
   ]

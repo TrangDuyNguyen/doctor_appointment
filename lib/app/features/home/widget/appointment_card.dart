@@ -22,7 +22,6 @@ class AppointmentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(8.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         gradient: context.appColors.brandPrimaryGradient,
@@ -53,17 +52,34 @@ class AppointmentCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       doctorName,
                       style: context.appTextStyles.titleMedium.bold
                           .copyWith(color: context.appColors.whiteColor),
                     ),
                     const SizedBox(height: 4.0),
                     Text(
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       '$specialty | $hospital',
                       style: context.appTextStyles.labelSmall
                           .copyWith(color: context.appColors.whiteColor),
                     ),
                   ],
+                ),
+              ),
+              InkWell(
+                onTap: () {},
+                child: ClipOval(
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: Image.asset(
+                      "lib/design/assets/icons/vertical_menu.png",
+                      color: context.appColors.whiteColor,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -79,10 +95,14 @@ class AppointmentCard extends StatelessWidget {
                       child:
                           Image.asset("lib/design/assets/icons/calender.png")),
                   const SizedBox(width: 8.0),
-                  Text(
-                    date,
-                    style: context.appTextStyles.labelSmall
-                        .copyWith(color: context.appColors.whiteColor),
+                  Expanded(
+                    child: Text(
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      date,
+                      style: context.appTextStyles.labelMedium
+                          .copyWith(color: context.appColors.whiteColor),
+                    ),
                   ),
                 ],
               ),
@@ -95,10 +115,14 @@ class AppointmentCard extends StatelessWidget {
                       child: Image.asset(
                           "lib/design/assets/icons/clock_card.png")),
                   const SizedBox(width: 8.0),
-                  Text(
-                    time,
-                    style: context.appTextStyles.labelSmall
-                        .copyWith(color: context.appColors.whiteColor),
+                  Expanded(
+                    child: Text(
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      time,
+                      style: context.appTextStyles.labelMedium
+                          .copyWith(color: context.appColors.whiteColor),
+                    ),
                   ),
                 ],
               ),
