@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:doctor_appointment/app/features/doctor_appointment/model/doctor_model.dart';
+import 'package:doctor_appointment/app/features/doctor_appointment/widget/doctor_card_widget.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/common/text_extension.dart';
 import 'package:doctor_appointment/design/utils/space_utils.dart';
@@ -258,6 +259,7 @@ class HomeView extends HookConsumerWidget {
               ).paddingTopSpace(SpaceType.large),
               GridView.builder(
                   shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: specialityList.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 4,
@@ -311,6 +313,29 @@ class HomeView extends HookConsumerWidget {
                   onChipSelected: (index) {
                     selectedChipIndex.value = index;
                   }),
+              topDoctorState.isLoading
+                  ? const ShimmerView().paddingTopSpace(SpaceType.medium)
+                  : topDoctorState.errorMessage != null
+                      ? const ShimmerView().paddingTopSpace(SpaceType.medium)
+                      : ListView.separated(
+                              scrollDirection: Axis.vertical,
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                var doctor = topDoctorState.doctors[index];
+                                return DoctorCardWidget(
+                                    doctorName: doctor.fullName ?? "",
+                                    specialty: doctor.specialist ?? "",
+                                    hospital: doctor.hospital ?? "",
+                                    rating: 0);
+                              },
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(
+                                    height: 12,
+                                  ),
+                              itemCount: topDoctorState.doctors.length) //
+                          .paddingTopSpace(SpaceType.medium)
+                          .paddingBottomSpace(SpaceType.medium),
             ],
           ),
         ),

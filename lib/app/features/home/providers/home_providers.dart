@@ -49,7 +49,9 @@ class TopDoctorState {
 class TopDoctorNotifier extends StateNotifier<TopDoctorState> {
   final HomeRepository homeRepository;
 
-  TopDoctorNotifier(this.homeRepository) : super(TopDoctorState());
+  TopDoctorNotifier(this.homeRepository) : super(TopDoctorState()){
+    fetchTopDoctors();
+  }
 
   Future<void> fetchTopDoctors() async {
     try {

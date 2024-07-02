@@ -24,6 +24,8 @@ class AppColors {
   Color get secondaryText => const Color(0xffA1A4B2);
   Color get textFieldColor => const Color(0xffCCD1D9);
   Color get error => const Color(0xffff0000);
+  Color get waning => const Color(0xffE59500);
+  Color get success => const Color(0xff18B23C);
 
   LinearGradient get brandPrimaryGradient => LinearGradient(
         colors: [brandSecondary, brandPrimary],
