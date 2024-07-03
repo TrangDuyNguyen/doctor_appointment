@@ -2,7 +2,6 @@ import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/common/text_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-
 import 'doctor_card_appointment_widget.dart';
 
 class ScheduledAppointmentsWidget extends HookWidget {
@@ -14,6 +13,8 @@ class ScheduledAppointmentsWidget extends HookWidget {
     final tabController = useTabController(initialLength: 3);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        shadowColor: Colors.white,
         title: Text(
           "My Appointment",
           style: context.appTextStyles.titleMedium.bold,
@@ -52,17 +53,22 @@ class ScheduledAppointmentsWidget extends HookWidget {
             width: 20,
           ),
         ],
-        bottom: TabBar(
-          controller: tabController,
-          labelStyle: context.appTextStyles.labelLarge,
-          labelColor: context.appColors.brandPrimary,
-          indicatorColor: context.appColors.brandPrimary,
-          tabs: const [
-            Tab(text: 'Upcoming'),
-            Tab(text: 'Completed'),
-            Tab(text: 'Cancelled'),
-          ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(48.0),
+          child: TabBar(
+            controller: tabController,
+            labelStyle: context.appTextStyles.labelLarge,
+            labelColor: context.appColors.brandPrimary,
+            indicatorColor: context.appColors.brandPrimary,
+            dividerColor: Colors.transparent,
+            tabs: const [
+              Tab(text: 'Upcoming'),
+              Tab(text: 'Completed'),
+              Tab(text: 'Cancelled'),
+            ],
+          ),
         ),
+        elevation: 4.0, // Độ cao của AppBar (shadow)
       ),
       body: TabBarView(
         controller: tabController,

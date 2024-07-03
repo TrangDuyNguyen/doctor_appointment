@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../widget/user_widget.dart';
+
 class UserView extends ConsumerWidget {
   /// TODO add your comment here
   const UserView({Key? key}) : super(key: key);
@@ -9,6 +11,6 @@ class UserView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Center(child: Text('Content for Tab 4'));
+    return const UserWidget();
   }
 }

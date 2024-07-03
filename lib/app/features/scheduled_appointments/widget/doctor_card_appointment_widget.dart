@@ -1,7 +1,6 @@
 import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/common/text_extension.dart';
 import 'package:doctor_appointment/design/utils/space_utils.dart';
-import 'package:doctor_appointment/design/widget/round_button.dart';
 import 'package:flutter/material.dart';
 
 class DoctorCardAppointmentWidget extends StatelessWidget {
