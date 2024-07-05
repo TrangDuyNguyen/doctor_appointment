@@ -1,4 +1,8 @@
 import 'package:doctor_appointment/app/features/auth/view/auth_view.dart';
+import 'package:doctor_appointment/app/features/doctor_appointment/view/book_appointment_view.dart';
+import 'package:doctor_appointment/app/features/doctor_appointment/view/doctor_detail_view.dart';
+import 'package:doctor_appointment/app/features/doctor_appointment/view/filter_doctor_view.dart';
+import 'package:doctor_appointment/app/features/doctor_appointment/view/search_doctor_view.dart';
 import 'package:doctor_appointment/app/features/user/view/fill_profile_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -33,6 +37,22 @@ final List<RouteBase> routes = [
   GoRoute(
     path: AppPage.fillProfile.getPath,
     builder: (context, state) => FillProfileScreen(),
+  ),
+  GoRoute(
+    path: AppPage.searchDoctor.getPath,
+    builder: (context, state) => const SearchDoctorView(),
+  ),
+  GoRoute(
+    path: AppPage.filterDoctor.getPath,
+    builder: (context, state) => const FilterDoctorView(),
+  ),
+  GoRoute(
+    path: AppPage.detailDoctor.getPath,
+    builder: (context, state) => const DoctorDetailView(),
+  ),
+  GoRoute(
+    path: AppPage.bookAppointment.getPath,
+    builder: (context, state) => const BookAppointmentView(),
   ),
 
   /// for showing onboarding

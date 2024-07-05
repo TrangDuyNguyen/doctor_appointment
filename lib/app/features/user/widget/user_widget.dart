@@ -14,6 +14,9 @@ class UserWidget extends HookWidget {
     var isNotification = useState(true);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        shadowColor: Colors.white,
+        elevation: 4.0,
         title: Text(
           "My Profile",
           style: context.appTextStyles.titleMedium.bold,

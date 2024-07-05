@@ -26,6 +26,7 @@ class AppColors {
   Color get error => const Color(0xffff0000);
   Color get waning => const Color(0xffE59500);
   Color get success => const Color(0xff18B23C);
+  Color get link => const Color(0xff3F8EFC);
 
   LinearGradient get brandPrimaryGradient => LinearGradient(
         colors: [brandSecondary, brandPrimary],

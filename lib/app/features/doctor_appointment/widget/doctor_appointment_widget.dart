@@ -1,30 +1,18 @@
+import 'package:doctor_appointment/app/core/router/app_page.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/common/text_extension.dart';
 import 'package:doctor_appointment/design/utils/space_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../design/widget/chip_list.dart';
+import '../../../core/constraints/fake_data.dart';
+import '../../../core/router/app_routing_mixin.dart';
 import 'doctor_card_widget.dart';
 
-class DoctorAppointmentWidget extends HookWidget {
+class DoctorAppointmentWidget extends HookWidget with AppRoutingMixin {
   DoctorAppointmentWidget({Key? key}) : super(key: key);
-  final List<String> listChip = [
-    "All",
-    "General",
-    "Gastroenteritis",
-    "Cardiologist",
-    "Orthopaedic",
-    "Neurologist",
-    "Otology",
-    "Dentist",
-    "Rhinology",
-    "Urologist",
-    "Otology",
-    "Pulmonologist",
-    "Neurologist",
-    "Gastroenteritis"
-  ];
   @override
   Widget build(BuildContext context) {
     final selectedChipIndex = useState(0);
@@ -39,7 +27,9 @@ class DoctorAppointmentWidget extends HookWidget {
         ),
         actions: [
           InkWell(
-            onTap: () {},
+            onTap: () {
+              context.push(AppPage.searchDoctor.getPath);
+            },
             child: ClipOval(
               child: SizedBox(
                 width: 24,
@@ -55,7 +45,9 @@ class DoctorAppointmentWidget extends HookWidget {
             width: 24,
           ),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              context.push(AppPage.filterDoctor.getPath);
+            },
             child: ClipOval(
               child: SizedBox(
                 width: 24,

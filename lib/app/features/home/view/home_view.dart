@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_controller.dart';
+import 'package:doctor_appointment/app/core/router/app_page.dart';
 import 'package:doctor_appointment/app/features/doctor_appointment/model/doctor_model.dart';
 import 'package:doctor_appointment/app/features/doctor_appointment/widget/doctor_card_widget.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
@@ -8,9 +9,11 @@ import 'package:doctor_appointment/design/widget/carousel_slider.dart';
 import 'package:doctor_appointment/design/widget/chip_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../design/widget/shimmer_view.dart';
+import '../../../core/constraints/fake_data.dart';
 import '../../doctor_appointment/model/speciality_model.dart';
 import '../providers/home_providers.dart';
 import '../widget/appointment_card.dart';
@@ -38,23 +41,6 @@ class HomeView extends HookConsumerWidget {
         speciality: 'Herbal', icon: 'lib/design/assets/icons/herbal.png'),
     SpecialityModel(
         speciality: 'More', icon: 'lib/design/assets/icons/more.png'),
-  ];
-
-  final List<String> listChip = [
-    "All",
-    "General",
-    "Gastroenteritis",
-    "Cardiologist",
-    "Orthopaedic",
-    "Neurologist",
-    "Otology",
-    "Dentist",
-    "Rhinology",
-    "Urologist",
-    "Otology",
-    "Pulmonologist",
-    "Neurologist",
-    "Gastroenteritis"
   ];
 
   @override
@@ -193,7 +179,9 @@ class HomeView extends HookConsumerWidget {
                       ),
                     ),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        context.push(AppPage.filterDoctor.getPath);
+                      },
                       child: Image.asset(
                         "lib/design/assets/icons/filter.png",
                         color: context.appColors.brandPrimary,

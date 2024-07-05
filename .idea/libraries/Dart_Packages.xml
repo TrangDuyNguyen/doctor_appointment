@@ -863,6 +863,13 @@
             </list>
           </value>
         </entry>
+        <entry key="simple_gesture_detector">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/simple_gesture_detector-0.2.1/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="sky_engine">
           <value>
             <list>
@@ -909,6 +916,13 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/string_scanner-1.2.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="table_calendar">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/table_calendar-3.1.2/lib" />
             </list>
           </value>
         </entry>
@@ -1167,12 +1181,14 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/shelf-1.4.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/shelf_web_socket-2.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/shimmer-2.0.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/simple_gesture_detector-0.2.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/source_span-1.10.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/stack_trace-1.11.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/state_notifier-1.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/stream_channel-2.1.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/stream_transform-2.1.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/string_scanner-1.2.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/table_calendar-3.1.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/term_glyph-1.2.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/test_api-0.7.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/time-2.1.4/lib" />
