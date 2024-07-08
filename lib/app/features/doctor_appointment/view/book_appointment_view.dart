@@ -250,7 +250,7 @@ class BookAppointmentView extends HookWidget with AppRoutingMixin {
           height: 52,
           child: ElevatedButton(
             onPressed: () {
-              context.push(AppPage.bookAppointment.getPath);
+              context.push(AppPage.patientDetail.getPath);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor:

@@ -1,7 +1,9 @@
+import 'package:doctor_appointment/app/core/router/app_page.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/common/text_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'doctor_card_appointment_widget.dart';
 
 class ScheduledAppointmentsWidget extends HookWidget {
@@ -87,12 +89,17 @@ class ScheduledAppointmentsWidget extends HookWidget {
       itemCount: 5,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
-        return DoctorCardAppointmentWidget(
-          doctorName: 'DR William Smith',
-          specialty: 'Dentist',
-          status: status,
-          avatar: '',
-          dateBook: 'Aug 17, 2023 | 11:00 AM',
+        return GestureDetector(
+          onTap: () {
+            context.push(AppPage.scheduledAppointmentDetail.getPath);
+          },
+          child: DoctorCardAppointmentWidget(
+            doctorName: 'DR William Smith',
+            specialty: 'Dentist',
+            status: status,
+            avatar: '',
+            dateBook: 'Aug 17, 2023 | 11:00 AM',
+          ),
         );
       },
     );

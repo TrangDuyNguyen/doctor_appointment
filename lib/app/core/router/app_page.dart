@@ -10,6 +10,8 @@ enum AppPage {
   filterDoctor,
   detailDoctor,
   bookAppointment,
+  patientDetail,
+  scheduledAppointmentDetail,
 }
 
 extension AppPageEx on AppPage {
@@ -25,6 +27,8 @@ extension AppPageEx on AppPage {
     AppPage.filterDoctor: 'filterDoctor',
     AppPage.detailDoctor: 'detailDoctor',
     AppPage.bookAppointment: 'bookAppointment',
+    AppPage.patientDetail: 'patientDetail',
+    AppPage.scheduledAppointmentDetail: 'scheduledAppointmentDetail',
   };
 
   static const Map<AppPage, String> _pagePaths = {
@@ -39,12 +43,15 @@ extension AppPageEx on AppPage {
     AppPage.signUp: '/signUp',
     AppPage.fillProfile: '/fillProfile',
 
-    ///
+    /// scheduledAppointment
+    AppPage.scheduledAppointmentDetail: '/scheduledAppointmentDetail',
+
     /// doctor
     AppPage.searchDoctor: '/searchDoctor',
     AppPage.filterDoctor: '/filterDoctor',
     AppPage.detailDoctor: '/detailDoctor',
     AppPage.bookAppointment: '/bookAppointment',
+    AppPage.patientDetail: '/patientDetail',
   };
 
   String get namePage => _pageNames[this] ?? '';
