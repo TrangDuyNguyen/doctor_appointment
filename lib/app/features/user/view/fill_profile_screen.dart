@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:doctor_appointment/app/core/router/app_routing_mixin.dart';
 import 'package:doctor_appointment/app/features/user/model/user_model.dart';
 import 'package:doctor_appointment/app/features/user/providers/user_providers.dart';
+import 'package:doctor_appointment/app/features/user/state/user_state.dart';
 import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/common/text_extension.dart';
@@ -89,6 +90,14 @@ class FillProfileScreen extends HookConsumerWidget with AppRoutingMixin {
       // Dispose các controller khi widget unmount
       return () {};
     }, []);
+
+    useEffect(() {
+      if (userState.status == UserStatus.updateSuccess) {
+        goOnBoard(context);
+      }
+      // Dispose các controller khi widget unmount
+      return () {};
+    }, [userState.status]);
 
     return Scaffold(
       appBar: AppBar(
@@ -244,8 +253,17 @@ class FillProfileScreen extends HookConsumerWidget with AppRoutingMixin {
                         errorMessageOnValidation: (value, context) {
                           return null;
                         },
-                        prefixIcon: Image.asset(
-                            "lib/design/assets/icons/icon_calendar.png"),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ClipOval(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: Image.asset(
+                                  'lib/design/assets/icons/calender.png'),
+                            ),
+                          ),
+                        ),
                         readOnly: true,
                         onTap: () async {
                           final selectedDate = await showDatePicker(
@@ -403,26 +421,18 @@ class FillProfileScreen extends HookConsumerWidget with AppRoutingMixin {
               RoundButton(
                   title: "CONTINUE",
                   onPressed: () {
-                    DialogHelpers.showSuccessDialog(
-                      context,
-                      title: 'Congratulations!',
-                      content:
-                          "Your account is ready to use. You will \nbe redirected to the Home page in a \nfew seconds...",
-                      onConfirm: (ctx) {
-                        if (_formKey.currentState!.validate()) {
-                          UserModel newUser = UserModel(
-                            uid: userState.user?.uid,
-                            fullName: mFormState.value.name.value,
-                            email: mFormState.value.email.value,
-                            dateOfBirth: mFormState.value.dateOfBirth,
-                            phone: mFormState.value.phone.value,
-                            gender: mFormState.value.gender,
-                          );
+                    if (_formKey.currentState!.validate()) {
+                      UserModel newUser = UserModel(
+                        uid: userState.user?.uid,
+                        fullName: mFormState.value.name.value,
+                        email: mFormState.value.email.value,
+                        dateOfBirth: mFormState.value.dateOfBirth,
+                        phone: mFormState.value.phone.value,
+                        gender: mFormState.value.gender,
+                      );
 
-                          userNotifier.updateUser(newUser);
-                        }
-                      },
-                    );
+                      userNotifier.updateUser(newUser);
+                    }
                   }),
               SizedBox(
                 height: context.bottomSpacer,

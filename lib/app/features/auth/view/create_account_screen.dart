@@ -3,6 +3,7 @@ import 'package:doctor_appointment/app/core/router/app_routing_mixin.dart';
 import 'package:doctor_appointment/app/core/validators/email.dart';
 import 'package:doctor_appointment/app/core/validators/name.dart';
 import 'package:doctor_appointment/app/core/validators/password.dart';
+import 'package:doctor_appointment/app/features/auth/providers/create_acc_providers.dart';
 import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/common/text_extension.dart';
@@ -53,8 +54,8 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen>
 
     final mFormState = useState(FormAuthState.initial());
 
-    final authNotifier = ref.read(authNotifierProvider.notifier);
-    final authState = ref.watch(authNotifierProvider);
+    final createAccNotifier = ref.read(createAccNotifierProvider.notifier);
+    final createAccState = ref.watch(createAccNotifierProvider);
 
     useEffect(() {
       mNameTextController
@@ -89,13 +90,13 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen>
     }, []);
 
     useEffect(() {
-      if (authState.status == AuthStatus.authenticated) {
+      if (createAccState.status == AuthStatus.authenticated) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           context.push(AppPage.fillProfile.getPath);
         });
       }
       return;
-    }, [authState.status]);
+    }, [createAccState.status]);
 
     return Scaffold(
       appBar: AppBar(
@@ -203,15 +204,17 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen>
                       height: 16,
                     ),
                     Visibility(
-                        visible: authState.status == AuthStatus.authenticating,
+                        visible:
+                            createAccState.status == AuthStatus.authenticating,
                         child: CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
                               context.appColors.secondaryColor),
                         )),
                     Visibility(
-                        visible: authState.status == AuthStatus.authenticatedError,
+                        visible: createAccState.status ==
+                            AuthStatus.authenticatedError,
                         child: Text(
-                          authState.errorMessage ?? "",
+                          createAccState.errorMessage ?? "",
                           style: context.appTextStyles.titleSmall
                               .copyWith(color: context.appColors.error),
                         )),
@@ -226,7 +229,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen>
                             final email = mEmailTextController.text.trim();
                             final password =
                                 mPasswordTextController.text.trim();
-                            authNotifier.createAccount(
+                            createAccNotifier.createAccount(
                                 name: userName,
                                 email: email,
                                 password: password); // Call the login function

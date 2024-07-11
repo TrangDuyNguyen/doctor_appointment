@@ -4,7 +4,6 @@ import 'package:doctor_appointment/app/features/auth/form_state/form_state.dart'
 import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/common/text_extension.dart';
-import 'package:doctor_appointment/design/utils/space_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -13,7 +12,7 @@ import '../../../../design/widget/round_button.dart';
 import '../../../../design/widget/text_form_base.dart';
 import '../../../core/validators/email.dart';
 import '../enum/auth_status.dart';
-import '../providers/auth_providers.dart';
+import '../providers/sign_in_providers.dart';
 
 class SignInScreen extends HookConsumerWidget with AppRoutingMixin {
   SignInScreen({super.key});
@@ -32,8 +31,8 @@ class SignInScreen extends HookConsumerWidget with AppRoutingMixin {
 
     final obscureText = useState<bool>(true);
 
-    final authNotifier = ref.read(authNotifierProvider.notifier);
-    final authState = ref.watch(authNotifierProvider);
+    final signInNotifier = ref.read(signInNotifierProvider.notifier);
+    final authState = ref.watch(signInNotifierProvider);
 
     useEffect(() {
       mEmailTextController
@@ -55,7 +54,7 @@ class SignInScreen extends HookConsumerWidget with AppRoutingMixin {
     useEffect(() {
       if (authState.status == AuthStatus.authenticated) {
         goOnBoard(context);
-      } else if (authState.status == AuthStatus.unauthenticated) {}
+      } else if (authState.status == AuthStatus.authenticatedError) {}
       return;
     }, [authState.status]);
 
@@ -63,7 +62,7 @@ class SignInScreen extends HookConsumerWidget with AppRoutingMixin {
       appBar: AppBar(
         leading: InkWell(
           onTap: () {
-            pop(context);
+            Navigator.of(context).pop();
           },
           child: Image.asset(
             "lib/design/assets/icons/back.png",
@@ -140,7 +139,8 @@ class SignInScreen extends HookConsumerWidget with AppRoutingMixin {
                               context.appColors.secondaryColor),
                         )),
                     Visibility(
-                        visible: authState.status == AuthStatus.authenticatedError,
+                        visible:
+                            authState.status == AuthStatus.authenticatedError,
                         child: Text(
                           authState.errorMessage ?? "",
                           style: context.appTextStyles.titleSmall
@@ -156,7 +156,7 @@ class SignInScreen extends HookConsumerWidget with AppRoutingMixin {
                             final email = mEmailTextController.text.trim();
                             final password =
                                 mPasswordTextController.text.trim();
-                            authNotifier.login(
+                            signInNotifier.login(
                                 email: email,
                                 password: password); // Call the login function
                           }

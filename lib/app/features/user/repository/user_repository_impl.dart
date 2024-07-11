@@ -45,7 +45,7 @@ class UserRepositoryImpl extends UserRepository {
           .collection('users')
           .doc(userModel.uid)
           .update(userModel.toMap());
-      UserState newState = UserState(status: UserStatus.success);
+      UserState newState = UserState(status: UserStatus.updateSuccess);
       return newState;
     } on FirebaseException catch (e) {
       UserState error =

@@ -1,3 +1,5 @@
+import 'package:doctor_appointment/app/core/eviroments/app_config.dart';
+import 'package:doctor_appointment/app/core/eviroments/flavor_config.dart';
 import 'package:doctor_appointment/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -11,11 +13,13 @@ Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
+  final firebaseOptions = await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  AppConfig.initialize(flavor: Flavor.debug, environment: Environment.test, firebaseOptions: firebaseOptions.options);
+
   // for initializing local storage
   final appStorage = AppStorage();
   await appStorage.initAppStorage();
-
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
     ProviderScope(

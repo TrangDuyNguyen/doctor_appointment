@@ -1,6 +1,6 @@
 import '../model/user_model.dart';
 
-enum UserStatus { loading, success, failure, initialize }
+enum UserStatus { loading, success, failure, initialize, updateSuccess }
 
 class UserState {
   final UserModel? user;

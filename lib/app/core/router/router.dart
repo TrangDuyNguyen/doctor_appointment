@@ -1,7 +1,5 @@
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import '../../features/main/view/main_view.dart';
 import 'app_page.dart';
 import 'app_routing.dart';
 

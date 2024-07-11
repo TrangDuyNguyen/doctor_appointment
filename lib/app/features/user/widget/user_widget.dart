@@ -1,16 +1,22 @@
+import 'package:doctor_appointment/app/core/router/app_routing_mixin.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/common/text_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../design/utils/dialog_utils.dart';
 import '../../../../design/utils/space_utils.dart';
+import '../../auth/providers/auth_providers.dart';
 
-class UserWidget extends HookWidget {
+class UserWidget extends HookConsumerWidget with AppRoutingMixin {
   /// TODO add your comment here
   const UserWidget({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authNotifier = ref.read(authNotifierProvider.notifier);
+
     var isNotification = useState(true);
     return Scaffold(
       appBar: AppBar(
@@ -173,7 +179,30 @@ class UserWidget extends HookWidget {
                         ),
                       ),
                     ],
-                  ).paddingTopSpace(SpaceType.medium)
+                  ).paddingTopSpace(SpaceType.medium),
+                  Row(
+                    children: [
+                      Image.asset(
+                        "lib/design/assets/icons/theme.png",
+                        color: context.appColors.brandPrimary,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: Text(
+                          "Theme",
+                          style: context.appTextStyles.labelMedium
+                              .copyWith(color: context.appColors.secondaryText),
+                        ),
+                      ),
+                      Text(
+                        "Light",
+                        style: context.appTextStyles.labelMedium
+                            .apply(color: context.appColors.secondaryText),
+                      ),
+                    ],
+                  ).paddingTopSpace(SpaceType.medium),
                 ],
               ),
             ).paddingTopSpace(SpaceType.large),
@@ -344,24 +373,37 @@ class UserWidget extends HookWidget {
                       ),
                     ],
                   ).paddingTopSpace(SpaceType.medium),
-                  Row(
-                    children: [
-                      Image.asset(
-                        "lib/design/assets/icons/logout.png",
-                        color: context.appColors.error,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Text(
-                          "Logout",
-                          style: context.appTextStyles.labelMedium
-                              .copyWith(color: context.appColors.error),
+                  GestureDetector(
+                    onTap: () => {
+                      DialogHelpers.showNeutralDialog(context,
+                          title: 'LogOut',
+                          content: 'Are you sure you want to log out?',
+                          onConfirm: (context) {
+                        authNotifier.logout();
+                        Navigator.pop(context);
+                      }, onDeny: (context) {
+                        Navigator.pop(context);
+                      })
+                    },
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          "lib/design/assets/icons/logout.png",
+                          color: context.appColors.error,
                         ),
-                      ),
-                    ],
-                  ).paddingTopSpace(SpaceType.medium),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Text(
+                            "Logout",
+                            style: context.appTextStyles.labelMedium
+                                .copyWith(color: context.appColors.error),
+                          ),
+                        ),
+                      ],
+                    ).paddingTopSpace(SpaceType.medium),
+                  ),
                 ],
               ),
             ).paddingTopSpace(SpaceType.medium)

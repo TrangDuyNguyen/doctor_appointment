@@ -1,3 +1,3 @@
 enum Flavor { debug, release }
 
-enum Environment { test, live }
+enum Environment { test, staging, live }

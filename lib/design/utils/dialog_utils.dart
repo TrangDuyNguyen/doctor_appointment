@@ -1,9 +1,9 @@
-import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/common/text_extension.dart';
 import 'package:doctor_appointment/design/utils/space_utils.dart';
-import 'package:doctor_appointment/design/widget/round_button.dart';
 import 'package:flutter/material.dart';
+
+enum DialogType { success, failure, neutral }
 
 class DialogHelpers {
   DialogHelpers._();
@@ -25,7 +25,7 @@ class DialogHelpers {
       confirmButtonText: confirmButtonText,
       icon: Icons.check_circle,
       iconColor: context.appColors.brandPrimary,
-      pathIcon: "lib/design/assets/icons/success.png",
+      type: DialogType.success,
     );
   }
 
@@ -35,50 +35,78 @@ class DialogHelpers {
     required String content,
     required Function(BuildContext) onConfirm,
     Function(BuildContext)? onDeny,
-    String? denyButtonText = 'Cancel',
+    String confirmButtonText = 'Confirm',
+    String? denyButtonText = 'Deny',
     bool clickOutsideToDismiss = false,
   }) {
     _showCustomDialog(
       context,
       title: title,
-      isFailure: true,
       content: content,
       onConfirm: onConfirm,
+      onDeny: onDeny,
       clickOutsideToDismiss: clickOutsideToDismiss,
+      confirmButtonText: confirmButtonText,
       denyButtonText: denyButtonText,
       icon: Icons.info,
       iconColor: context.appColors.error,
-      pathIcon: "lib/design/assets/icons/error.png",
+      type: DialogType.failure,
+    );
+  }
+
+  static void showNeutralDialog(
+    BuildContext context, {
+    required String title,
+    required String content,
+    required Function(BuildContext) onConfirm,
+    required Function(BuildContext) onDeny,
+    String confirmButtonText = 'Okay',
+    bool clickOutsideToDismiss = false,
+  }) {
+    _showCustomDialog(
+      context,
+      title: title,
+      content: content,
+      onConfirm: onConfirm,
+      clickOutsideToDismiss: clickOutsideToDismiss,
+      confirmButtonText: confirmButtonText,
+      onDeny: onDeny,
+      denyButtonText: "Cancel",
+      icon: Icons.info,
+      iconColor: context.appColors.primaryText,
+      type: DialogType.neutral,
     );
   }
 
   static void _showCustomDialog(
     BuildContext context, {
-    required String pathIcon,
-    IconData? icon,
-    Color? iconColor,
-    bool isFailure = false,
+    required DialogType type,
+    required IconData icon,
+    required Color iconColor,
     required String title,
     required String content,
     required Function(BuildContext) onConfirm,
+    Function(BuildContext)? onDeny,
     required bool clickOutsideToDismiss,
-    String? confirmButtonText,
+    required String confirmButtonText,
     String? denyButtonText = 'Deny',
   }) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog.adaptive(
-          elevation: 20,
+          elevation: 2,
           title: Align(
             alignment: Alignment.center,
             child: Column(
               children: [
-                Image.asset(
-                  pathIcon,
-                  width: context.width * 0.32,
-                  height: context.width * 0.32,
-                ).paddingBottomSpace(SpaceType.medium),
+                type == DialogType.success
+                    ? Image.asset("lib/design/assets/icons/success.png")
+                        .paddingBottomSpace(SpaceType.large)
+                    : type == DialogType.failure
+                        ? Image.asset("lib/design/assets/icons/error.png")
+                            .paddingBottomSpace(SpaceType.large)
+                        : const SizedBox.shrink(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -89,23 +117,56 @@ class DialogHelpers {
               ],
             ),
           ),
-          titleTextStyle: context.appTextStyles.titleMedium.bold
-              .apply(color: isFailure ? context.appColors.error : iconColor),
+          titleTextStyle:
+              context.appTextStyles.titleMedium.bold.apply(color: iconColor),
           content: Text(
             content,
             textAlign: TextAlign.center,
           ),
           contentTextStyle: context.appTextStyles.bodyMedium,
           actions: <Widget>[
-            !isFailure
-                ? RoundButton(
-                        title: confirmButtonText ?? 'Confirm',
-                        onPressed: () => onConfirm(context))
-                    .paddingBottomSpace(SpaceType.medium)
-                : RoundButton(
-                    type: RoundButtonType.secondary,
-                    title: denyButtonText ?? 'Cancel',
-                    onPressed: () => onConfirm(context)),
+            if (onDeny != null)
+              SizedBox(
+                height: 52,
+                child: OutlinedButton(
+                  onPressed: () {
+                    // Xử lý sự kiện hủy đặt chỗ
+                    onDeny(context);
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: context.appColors.error),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                  ),
+                  child: Text(
+                    denyButtonText ?? 'Deny',
+                    style: context.appTextStyles.labelMedium.bold
+                        .copyWith(color: context.appColors.error),
+                  ),
+                ),
+              ),
+            SizedBox(
+              height: 52,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Xử lý sự kiện đặt lại
+                  onConfirm(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      context.appColors.brandPrimary, // Màu nền của nút
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                ),
+                child: Text(
+                  confirmButtonText,
+                  style: context.appTextStyles.labelMedium.bold
+                      .copyWith(color: context.appColors.whiteColor),
+                ),
+              ),
+            ),
           ],
           actionsAlignment: MainAxisAlignment.center,
           alignment: Alignment.center,

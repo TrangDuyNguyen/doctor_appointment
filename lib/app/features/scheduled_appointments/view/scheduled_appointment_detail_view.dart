@@ -1,3 +1,4 @@
+import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/common/text_extension.dart';
 import 'package:doctor_appointment/design/utils/space_utils.dart';
@@ -11,7 +12,7 @@ class ScheduledAppointmentDetailView extends HookWidget with AppRoutingMixin {
 
   @override
   Widget build(BuildContext context) {
-    const String status = "Upcoming";
+    const String status = "Completed";
     return Scaffold(
       appBar: AppBar(
         leading: InkWell(
@@ -214,7 +215,7 @@ class ScheduledAppointmentDetailView extends HookWidget with AppRoutingMixin {
                       padding: const EdgeInsets.only(right: 8.0),
                       child: Text(
                         'Full Name',
-                        style: context.appTextStyles.labelMedium,
+                        style: context.appTextStyles.labelLarge,
                       ),
                     ),
                     const Padding(
@@ -223,8 +224,15 @@ class ScheduledAppointmentDetailView extends HookWidget with AppRoutingMixin {
                     ),
                     Text(
                       'Samata Shin',
-                      style: context.appTextStyles.labelMedium,
+                      style: context.appTextStyles.labelLarge,
                     ),
+                  ],
+                ),
+                const TableRow(
+                  children: [
+                    SizedBox(height: 10), // Khoảng cách giữa các dòng
+                    SizedBox(height: 10),
+                    SizedBox(height: 10),
                   ],
                 ),
                 TableRow(
@@ -233,7 +241,7 @@ class ScheduledAppointmentDetailView extends HookWidget with AppRoutingMixin {
                       padding: const EdgeInsets.only(right: 8.0),
                       child: Text(
                         'Age',
-                        style: context.appTextStyles.labelMedium,
+                        style: context.appTextStyles.labelLarge,
                       ),
                     ),
                     const Padding(
@@ -242,8 +250,15 @@ class ScheduledAppointmentDetailView extends HookWidget with AppRoutingMixin {
                     ),
                     Text(
                       '27',
-                      style: context.appTextStyles.labelMedium,
+                      style: context.appTextStyles.labelLarge,
                     ),
+                  ],
+                ),
+                const TableRow(
+                  children: [
+                    SizedBox(height: 10), // Khoảng cách giữa các dòng
+                    SizedBox(height: 10),
+                    SizedBox(height: 10),
                   ],
                 ),
                 TableRow(
@@ -252,7 +267,7 @@ class ScheduledAppointmentDetailView extends HookWidget with AppRoutingMixin {
                       padding: const EdgeInsets.only(right: 8.0),
                       child: Text(
                         'Gender',
-                        style: context.appTextStyles.labelMedium,
+                        style: context.appTextStyles.labelLarge,
                       ),
                     ),
                     const Padding(
@@ -261,8 +276,15 @@ class ScheduledAppointmentDetailView extends HookWidget with AppRoutingMixin {
                     ),
                     Text(
                       'Female',
-                      style: context.appTextStyles.labelMedium,
+                      style: context.appTextStyles.labelLarge,
                     ),
+                  ],
+                ),
+                const TableRow(
+                  children: [
+                    SizedBox(height: 10), // Khoảng cách giữa các dòng
+                    SizedBox(height: 10),
+                    SizedBox(height: 10),
                   ],
                 ),
                 TableRow(
@@ -271,7 +293,7 @@ class ScheduledAppointmentDetailView extends HookWidget with AppRoutingMixin {
                       padding: const EdgeInsets.only(right: 8.0),
                       child: Text(
                         'Problem',
-                        style: context.appTextStyles.labelMedium,
+                        style: context.appTextStyles.labelLarge,
                       ),
                     ),
                     const Padding(
@@ -280,7 +302,7 @@ class ScheduledAppointmentDetailView extends HookWidget with AppRoutingMixin {
                     ),
                     Text(
                       'Hello, simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.',
-                      style: context.appTextStyles.labelMedium,
+                      style: context.appTextStyles.labelLarge,
                     ),
                   ],
                 ),
@@ -289,6 +311,110 @@ class ScheduledAppointmentDetailView extends HookWidget with AppRoutingMixin {
           ],
         ),
       ),
+      bottomNavigationBar: status == "Upcoming"
+          ? Container(
+              padding: EdgeInsets.fromLTRB(20, 0, 20, context.bottomSpacer),
+              child: SizedBox(
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: () {
+                    //context.push(AppPage.bookAppointment.getPath);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: context.appColors.error, // Màu nền của nút
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                  ),
+                  child: Text(
+                    'CANCEL',
+                    style: context.appTextStyles.labelLarge.bold
+                        .copyWith(color: context.appColors.whiteColor),
+                  ),
+                ),
+              ),
+            )
+          : status == "Cancelled"
+              ? Container(
+                  padding: EdgeInsets.fromLTRB(20, 0, 20, context.bottomSpacer),
+                  child: SizedBox(
+                    height: 52,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        //context.push(AppPage.bookAppointment.getPath);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            context.appColors.brandPrimary, // Màu nền của nút
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                      ),
+                      child: Text(
+                        'Book Again',
+                        style: context.appTextStyles.labelLarge.bold
+                            .copyWith(color: context.appColors.whiteColor),
+                      ),
+                    ),
+                  ),
+                )
+              : Container(
+                  padding: EdgeInsets.fromLTRB(20, 0, 20, context.bottomSpacer),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 52,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              // Xử lý sự kiện hủy đặt chỗ
+                            },
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(
+                                  color: context.appColors.brandPrimary),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                            ),
+                            child: Text(
+                              'Rating',
+                              style: context.appTextStyles.labelMedium.bold
+                                  .copyWith(
+                                      color: context.appColors.brandPrimary),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: SizedBox(
+                          height: 52,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // Xử lý sự kiện đặt lại
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: context
+                                  .appColors.brandPrimary, // Màu nền của nút
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                            ),
+                            child: Text(
+                              'Book Again',
+                              style: context.appTextStyles.labelMedium.bold
+                                  .copyWith(
+                                      color: context.appColors.whiteColor),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
     );
   }
 }
