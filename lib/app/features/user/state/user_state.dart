@@ -27,9 +27,9 @@ class UserState {
     );
   }
 
-  factory UserState.initial() {
+  factory UserState.initial(UserModel user) {
     return UserState(
-      user: null,
+      user: user,
       status: UserStatus.initialize,
       errorMessage: null,
     );

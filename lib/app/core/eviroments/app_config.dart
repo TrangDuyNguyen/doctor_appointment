@@ -1,6 +1,7 @@
 //
 import 'package:firebase_core/firebase_core.dart';
 
+import '../../features/user/model/user_model.dart';
 import 'flavor_config.dart';
 
 class AppConfig {
@@ -16,6 +17,8 @@ class AppConfig {
   String defaultLanguageCode;
   String defaultThemeMode;
   bool isEnableNotification = false;
+
+  UserModel? _user;
 
   AppConfig({
     required this.appName,
@@ -33,8 +36,8 @@ class AppConfig {
 
   static void initialize(
       {required Flavor flavor,
-      required Environment environment,
-      required FirebaseOptions firebaseOptions}) {
+        required Environment environment,
+        required FirebaseOptions firebaseOptions}) {
     switch (flavor) {
       case Flavor.debug:
         switch (environment) {
@@ -76,4 +79,12 @@ class AppConfig {
     }
     return _instance!;
   }
+
+  // Method to set the user
+  void setUser(UserModel user) {
+    _user = user;
+  }
+
+  // Method to get the user
+  UserModel? get user => _user;
 }

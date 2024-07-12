@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_controller.dart';
+import 'package:doctor_appointment/app/core/eviroments/app_config.dart';
 import 'package:doctor_appointment/app/core/router/app_page.dart';
 import 'package:doctor_appointment/app/features/doctor_appointment/model/doctor_model.dart';
 import 'package:doctor_appointment/app/features/doctor_appointment/widget/doctor_card_widget.dart';
@@ -87,7 +88,7 @@ class HomeView extends HookConsumerWidget {
                             .copyWith(color: context.appColors.secondaryText),
                       ),
                       Text(
-                        "Stefani Wong",
+                        AppConfig.instance.user?.displayName ?? "",
                         style: context.appTextStyles.titleMedium.bold
                             .copyWith(color: context.appColors.primaryText),
                       ),

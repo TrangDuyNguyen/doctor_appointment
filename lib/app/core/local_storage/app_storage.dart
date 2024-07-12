@@ -24,7 +24,8 @@ class AppStorage {
   UserModel? getUser() {
     final userData = _box?.get('user');
     if (userData != null) {
-      return UserModel.fromMap(userData);
+      Map<String, dynamic> userMap = Map<String, dynamic>.from(userData);
+      return UserModel.fromMap(userMap);
     }
     return null;
   }

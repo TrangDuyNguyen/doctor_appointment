@@ -43,6 +43,14 @@ class AuthRepositoryImpl implements AuthRepository {
       // Save the user to local storage
       await _appStorage.saveUser(newUser);
 
+      // Check if user data is saved correctly
+      UserModel? localUser = _appStorage.getUser();
+      if (localUser != null) {
+        print("User data saved locally: ${localUser.toMap()}");
+      } else {
+        print("Failed to save user data locally.");
+      }
+
       AuthState newState = AuthState(
         status: AuthStatus.authenticated,
         user: newUser,
@@ -51,7 +59,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return newState;
     } on FirebaseAuthException catch (e) {
       AuthState errorState = AuthState(
-        status: AuthStatus.authenticatedError,
+        status: AuthStatus.createAccError,
         errorMessage: "Failed to create. Please check your credentials.",
       );
       return errorState;
@@ -60,24 +68,58 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<AuthState> login({required AuthModel auth}) async {
-    // TODO: implement login
     try {
-      UserCredential userCredential =
-          await _firebaseAuth.signInWithEmailAndPassword(
+      UserCredential userCredential = await _firebaseAuth.signInWithEmailAndPassword(
         email: auth.email ?? "",
         password: auth.password ?? "",
       );
       User user = userCredential.user!;
+
+      // Clear old user data
+      await _appStorage.clearAllData();
+
+      // Fetch or create user data from Firestore
+      DocumentSnapshot userDoc = await _fireStoreDB.collection('users').doc(user.uid).get();
+      UserModel loggedInUser;
+      if (userDoc.exists) {
+        loggedInUser = UserModel.fromMap(userDoc.data() as Map<String, dynamic>);
+      } else {
+        loggedInUser = UserModel(
+          uid: user.uid,
+          userName: user.displayName ?? "",
+          email: user.email,
+          fullName: user.displayName ?? "",
+          dateOfBirth: DateTime.now(),
+          phone: '',
+          gender: '',
+          dateCreate: DateTime.now(),
+          address: '',
+        );
+        await _fireStoreDB.collection('users').doc(user.uid).set(loggedInUser.toMap());
+      }
+
+      // Save the user to local storage
+      await _appStorage.saveUser(loggedInUser);
+
+      // Check if user data is saved correctly
+      UserModel? localUser = _appStorage.getUser();
+      if (localUser != null) {
+        print("User data saved locally: ${localUser.toMap()}");
+      } else {
+        print("Failed to save user data locally.");
+      }
+
       AuthState newState = AuthState(
         status: AuthStatus.authenticated,
-        user: UserModel(uid: user.uid),
+        user: loggedInUser,
         accessToken: "",
       );
       return newState;
     } on FirebaseAuthException catch (e) {
       AuthState errorState = AuthState(
-          status: AuthStatus.authenticatedError,
-          errorMessage: "Failed to login. Please check your credentials.");
+        status: AuthStatus.authenticatedError,
+        errorMessage: "Failed to login. Please check your credentials.",
+      );
       return errorState;
     }
   }

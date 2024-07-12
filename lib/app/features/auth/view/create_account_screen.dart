@@ -15,6 +15,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../core/hook/hook_navigation.dart';
 import '../enum/auth_status.dart';
 import '../form_state/form_state.dart';
 import '../providers/auth_providers.dart';
@@ -54,8 +55,10 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen>
 
     final mFormState = useState(FormAuthState.initial());
 
-    final createAccNotifier = ref.read(createAccNotifierProvider.notifier);
-    final createAccState = ref.watch(createAccNotifierProvider);
+    final createAccNotifier = ref.read(authNotifierProvider.notifier);
+    final createAccState = ref.watch(authNotifierProvider);
+
+    final appRouting = useAppRouting();
 
     useEffect(() {
       mNameTextController
@@ -92,7 +95,8 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen>
     useEffect(() {
       if (createAccState.status == AuthStatus.authenticated) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          context.push(AppPage.fillProfile.getPath);
+          appRouting.navPage(context,
+              page: AppPage.fillProfile, args: {'isFirstLogin': true});
         });
       }
       return;
@@ -211,8 +215,8 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen>
                               context.appColors.secondaryColor),
                         )),
                     Visibility(
-                        visible: createAccState.status ==
-                            AuthStatus.authenticatedError,
+                        visible:
+                            createAccState.status == AuthStatus.createAccError,
                         child: Text(
                           createAccState.errorMessage ?? "",
                           style: context.appTextStyles.titleSmall

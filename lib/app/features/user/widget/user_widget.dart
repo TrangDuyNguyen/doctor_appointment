@@ -1,12 +1,18 @@
 import 'package:doctor_appointment/app/core/router/app_routing_mixin.dart';
+import 'package:doctor_appointment/app/features/user/providers/user_providers.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/common/text_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../design/utils/dialog_utils.dart';
 import '../../../../design/utils/space_utils.dart';
+import '../../../core/hook/hook_navigation.dart';
+import '../../../core/router/app_page.dart';
+import '../../../core/router/router.dart';
+import '../../auth/enum/auth_status.dart';
 import '../../auth/providers/auth_providers.dart';
 
 class UserWidget extends HookConsumerWidget with AppRoutingMixin {
@@ -16,6 +22,21 @@ class UserWidget extends HookConsumerWidget with AppRoutingMixin {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authNotifier = ref.read(authNotifierProvider.notifier);
+    final authState = ref.watch(authNotifierProvider);
+
+    final userNotifier = ref.read(userNotifierProvider.notifier);
+    final userState = ref.watch(userNotifierProvider);
+    final appRouting = useAppRouting();
+    final router = ref.watch(routerProvider);
+
+    useEffect(() {
+      if (authState.status == AuthStatus.unauthenticated) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          router.go(AppPage.welcome.getPath);
+        });
+      }
+      return null;
+    }, [authState.status]);
 
     var isNotification = useState(true);
     return Scaffold(
@@ -70,12 +91,12 @@ class UserWidget extends HookConsumerWidget with AppRoutingMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Stefani Wong",
+                      userState.user?.displayName ?? "",
                       style: context.appTextStyles.titleMedium.bold
                           .copyWith(color: context.appColors.primaryText),
                     ),
                     Text(
-                      "Joined since 27 Dec 2020",
+                      userState.user?.email ?? "",
                       style: context.appTextStyles.labelMedium
                           .copyWith(color: context.appColors.primaryText),
                     ),
@@ -85,6 +106,9 @@ class UserWidget extends HookConsumerWidget with AppRoutingMixin {
                 ElevatedButton(
                   onPressed: () {
                     // Xử lý sự kiện đặt lại
+                    appRouting.navPage(context,
+                        page: AppPage.fillProfile,
+                        args: {'isFirstLogin': false});
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor:

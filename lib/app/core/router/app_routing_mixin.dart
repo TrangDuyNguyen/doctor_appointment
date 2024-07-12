@@ -10,9 +10,11 @@ mixin AppRoutingMixin {
     Map<String, String> pathParameters = const <String, String>{},
     Map<String, dynamic> queryParameters = const <String, dynamic>{},
   }) {
-    return context.push(
+    return context.pushNamed(
       page.namePage,
       extra: args,
+      pathParameters: pathParameters,
+      queryParameters: queryParameters,
     );
   }
 

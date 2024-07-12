@@ -21,7 +21,8 @@ class UserStateNotifier extends StateNotifier<UserState> {
   final AppStorage _appStorage;
 
   UserStateNotifier(this._repo, this._appStorage, [UserState? state])
-      : super(state ?? UserState.initial()) {
+      : super(state ??
+            UserState.initial(_appStorage.getUser() ?? UserModel(uid: ""))) {
     _checkUserLocal();
   }
 
@@ -37,50 +38,58 @@ class UserStateNotifier extends StateNotifier<UserState> {
         status: UserStatus.success,
       );
     } else {
-      FirebaseAuth.instance.authStateChanges().listen((User? user) async {
-        if (user != null) {
-          UserState userState = await _repo.getUserById(userId: user.uid);
-          if (userState.user != null) {
-            await _appStorage.saveUser(userState.user!);
-            state = userState.copyWith(status: UserStatus.success);
-          } else {
-            state = state.copyWith(
-              status: UserStatus.failure,
-              errorMessage: "User not found",
-            );
-          }
+      // Check if there is a currently signed-in user with FirebaseAuth
+      User? firebaseUser = FirebaseAuth.instance.currentUser;
+      if (firebaseUser != null) {
+        UserState userState = await _repo.getUserById(userId: firebaseUser.uid);
+        if (userState.user != null) {
+          await _appStorage.saveUser(userState.user!);
+          state = userState.copyWith(status: UserStatus.success);
         } else {
           state = state.copyWith(
             status: UserStatus.failure,
-            errorMessage: "No user signed in",
+            errorMessage: "User not found",
           );
         }
-      });
+      } else {
+        state = state.copyWith(
+          status: UserStatus.failure,
+          errorMessage: "No user signed in",
+        );
+      }
     }
   }
 
   Future<void> updateUserLocalDB(UserModel userModel) async {
     state = state.copyWith(status: UserStatus.loading);
     await _appStorage.saveUser(userModel);
-    state = state.copyWith(status: UserStatus.success);
+    state = state.copyWith(user: userModel, status: UserStatus.updateSuccess);
   }
 
   Future<void> createUser(UserModel userModel) async {
     state = state.copyWith(status: UserStatus.loading);
     UserState userState = await _repo.createUser(userModel: userModel);
+    if (userState.status == UserStatus.success) {
+      await _appStorage.saveUser(userState.user!);
+    }
     state = userState;
   }
 
   Future<void> updateUser(UserModel userModel) async {
     state = state.copyWith(status: UserStatus.loading);
     UserState userState = await _repo.editUser(userModel: userModel);
-    await _appStorage.saveUser(userModel);
+    if (userState.status == UserStatus.success) {
+      await _appStorage.saveUser(userState.user!);
+    }
     state = userState;
   }
 
   Future<void> deleteUser(String userId) async {
     state = state.copyWith(status: UserStatus.loading);
     UserState userState = await _repo.deleteUser(userId: userId);
+    if (userState.status == UserStatus.success) {
+      await _appStorage.clearAllData();
+    }
     state = userState;
   }
 

@@ -98,6 +98,9 @@ class UserRepositoryImpl extends UserRepository {
   }
 }
 
+class _firebaseStorage {
+}
+
 final userRepositoryProvider = Provider<UserRepository>((ref) {
   return UserRepositoryImpl();
 });

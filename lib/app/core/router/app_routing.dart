@@ -38,7 +38,14 @@ final List<RouteBase> routes = [
   ),
   GoRoute(
     path: AppPage.fillProfile.getPath,
-    builder: (context, state) => FillProfileScreen(),
+    name: AppPage.fillProfile.namePage,
+    builder: (context, state) {
+      Map<String, dynamic> args = state.extra as Map<String, dynamic>;
+      bool isFirstLogin = args['isFirstLogin'] ?? false;
+      return FillProfileScreen(
+        isFirstLogin: isFirstLogin,
+      );
+    },
   ),
   GoRoute(
     path: AppPage.searchDoctor.getPath,

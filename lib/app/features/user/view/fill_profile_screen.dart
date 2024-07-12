@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:doctor_appointment/app/core/router/app_routing_mixin.dart';
 import 'package:doctor_appointment/app/features/user/model/user_model.dart';
-import 'package:doctor_appointment/app/features/user/providers/user_providers.dart';
 import 'package:doctor_appointment/app/features/user/state/user_state.dart';
 import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
@@ -15,18 +14,23 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
-import '../../../../design/utils/dialog_utils.dart';
 import '../../../../design/widget/bottom_sheet.dart';
 import '../../../../design/widget/text_form_base.dart';
 import '../../../core/validators/email.dart';
 import '../../../core/validators/name.dart';
 import '../../../core/validators/phone.dart';
+import '../providers/user_providers.dart';
 import '../state/fill_profile_form_state.dart';
 import 'package:intl/intl.dart';
 
 class FillProfileScreen extends HookConsumerWidget with AppRoutingMixin {
-  FillProfileScreen({super.key});
+  final bool isFirstLogin;
+  FillProfileScreen({
+    super.key,
+    required this.isFirstLogin,
+  });
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mNameTextController = useTextEditingController();
@@ -117,15 +121,18 @@ class FillProfileScreen extends HookConsumerWidget with AppRoutingMixin {
           style: context.appTextStyles.titleMedium.bold,
         ),
         actions: [
-          TextButton(
-              onPressed: () {
-                goOnBoard(context);
-              },
-              child: Text(
-                "Skip",
-                style: context.appTextStyles.labelMedium.bold
-                    .copyWith(color: context.appColors.brandPrimary),
-              ))
+          Visibility(
+            visible: isFirstLogin,
+            child: TextButton(
+                onPressed: () {
+                  goOnBoard(context);
+                },
+                child: Text(
+                  "Skip",
+                  style: context.appTextStyles.labelMedium.bold
+                      .copyWith(color: context.appColors.brandPrimary),
+                )),
+          )
         ],
       ),
       body: SingleChildScrollView(
@@ -183,6 +190,7 @@ class FillProfileScreen extends HookConsumerWidget with AppRoutingMixin {
                                           pickedFile = await ImagePicker()
                                               .pickImage(
                                                   source: ImageSource.camera),
+
                                           if (pickedFile != null)
                                             {
                                               mFormState.value = mFormState
@@ -419,7 +427,7 @@ class FillProfileScreen extends HookConsumerWidget with AppRoutingMixin {
                   )),
               const Spacer(),
               RoundButton(
-                  title: "CONTINUE",
+                  title: isFirstLogin ? "CONTINUE" : "UPDATE",
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       UserModel newUser = UserModel(

@@ -12,6 +12,7 @@ import '../../../../design/widget/round_button.dart';
 import '../../../../design/widget/text_form_base.dart';
 import '../../../core/validators/email.dart';
 import '../enum/auth_status.dart';
+import '../providers/auth_providers.dart';
 import '../providers/sign_in_providers.dart';
 
 class SignInScreen extends HookConsumerWidget with AppRoutingMixin {
@@ -31,8 +32,8 @@ class SignInScreen extends HookConsumerWidget with AppRoutingMixin {
 
     final obscureText = useState<bool>(true);
 
-    final signInNotifier = ref.read(signInNotifierProvider.notifier);
-    final authState = ref.watch(signInNotifierProvider);
+    final signInNotifier = ref.read(authNotifierProvider.notifier);
+    final authState = ref.watch(authNotifierProvider);
 
     useEffect(() {
       mEmailTextController
@@ -53,8 +54,14 @@ class SignInScreen extends HookConsumerWidget with AppRoutingMixin {
 
     useEffect(() {
       if (authState.status == AuthStatus.authenticated) {
+        print("authenticated");
         goOnBoard(context);
-      } else if (authState.status == AuthStatus.authenticatedError) {}
+      } else if (authState.status == AuthStatus.authenticatedError) {
+        print("authenticatedError");
+      }
+      else if (authState.status == AuthStatus.unauthenticated) {
+        print("unauthenticated");
+      }
       return;
     }, [authState.status]);
 

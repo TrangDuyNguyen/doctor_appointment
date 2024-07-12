@@ -32,7 +32,7 @@ class FillProfileFormState with FormzMixin {
     //return FillProfileFormState.fake();
     // }
     return FillProfileFormState(
-      avatar: XFile(''),
+      avatar: XFile(userModel?.avatar ?? ""),
       name: Name.pure(userModel?.displayName ?? ""),
       email: Email.pure(userModel?.email ?? ""),
       dateOfBirth: userModel?.dateOfBirth ?? DateTime.now(),

@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'app/app.dart';
 import 'app/core/local_storage/app_storage.dart';
+import 'app/features/user/model/user_model.dart';
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +21,12 @@ Future<void> main() async {
   // for initializing local storage
   final appStorage = AppStorage();
   await appStorage.initAppStorage();
+
+  // Lấy người dùng từ bộ nhớ cục bộ và thiết lập trong AppConfig
+  UserModel? storedUser = appStorage.getUser();
+  if (storedUser != null) {
+    AppConfig.instance.setUser(storedUser);
+  }
 
   runApp(
     ProviderScope(
