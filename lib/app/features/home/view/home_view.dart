@@ -3,6 +3,7 @@ import 'package:doctor_appointment/app/core/eviroments/app_config.dart';
 import 'package:doctor_appointment/app/core/router/app_page.dart';
 import 'package:doctor_appointment/app/features/doctor_appointment/model/doctor_model.dart';
 import 'package:doctor_appointment/app/features/doctor_appointment/widget/doctor_card_widget.dart';
+import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
 import 'package:doctor_appointment/design/common/text_extension.dart';
 import 'package:doctor_appointment/design/utils/space_utils.dart';
@@ -16,6 +17,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../design/widget/shimmer_view.dart';
 import '../../../core/constraints/fake_data.dart';
 import '../../doctor_appointment/model/speciality_model.dart';
+import '../../user/providers/user_providers.dart';
 import '../providers/home_providers.dart';
 import '../widget/appointment_card.dart';
 
@@ -50,6 +52,9 @@ class HomeView extends HookConsumerWidget {
     final searchFocusNote = useFocusNode();
     final selectedChipIndex = useState(0);
 
+    final userNotifier = ref.read(userNotifierProvider.notifier);
+    final userState = ref.watch(userNotifierProvider);
+
     final CarouselController mPopularDoctorSliderController =
         CarouselController();
 
@@ -66,16 +71,17 @@ class HomeView extends HookConsumerWidget {
               Row(
                 children: [
                   CircleAvatar(
-                    radius: 22, // Set the radius to 28 to make the diameter 56
-                    backgroundColor: context.appColors.brandPrimary,
+                    radius: 22,
                     child: ClipOval(
-                      child: SizedBox(
-                        width: 44,
-                        height: 44,
-                        child: Image.asset(
-                          "lib/design/assets/icons/avatar_fake.png",
-                          fit: BoxFit.cover,
-                        ),
+                      child: Image.network(
+                        userState.user?.avatar ?? "",
+                        errorBuilder: (context, error, stackTrace) {
+                          return CircleAvatar(
+                            radius: context.width * 0.33 / 2,
+                            backgroundImage: const AssetImage(
+                                'lib/design/assets/icons/avatar.png'),
+                          );
+                        },
                       ),
                     ),
                   ).paddingRightSpace(SpaceType.small),
@@ -88,7 +94,7 @@ class HomeView extends HookConsumerWidget {
                             .copyWith(color: context.appColors.secondaryText),
                       ),
                       Text(
-                        AppConfig.instance.user?.displayName ?? "",
+                        userState.user?.displayName ?? "",
                         style: context.appTextStyles.titleMedium.bold
                             .copyWith(color: context.appColors.primaryText),
                       ),

@@ -1,7 +1,7 @@
 //
 import 'package:firebase_core/firebase_core.dart';
 
-import '../../features/user/model/user_model.dart';
+import '../../features/user/entity/user_model.dart';
 import 'flavor_config.dart';
 
 class AppConfig {

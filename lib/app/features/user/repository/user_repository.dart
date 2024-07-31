@@ -1,4 +1,6 @@
-import 'package:doctor_appointment/app/features/user/model/user_model.dart';
+import 'package:doctor_appointment/app/features/user/entity/user_model.dart';
+import 'package:doctor_appointment/app/features/user/model/profile_model.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../state/user_state.dart';
 
@@ -7,9 +9,7 @@ abstract class UserRepository {
     required UserModel userModel,
   });
 
-  Future<UserState> editUser({
-    required UserModel userModel,
-  });
+  Future<UserState> editUser({required UserModel userModel});
 
   Future<UserState> deleteUser({
     required String userId,
@@ -27,4 +27,6 @@ abstract class UserRepository {
   Future<UserState> getUserById({
     required String userId,
   });
+
+  Future<String> uploadAvatar({required XFile avatar, required String uid});
 }

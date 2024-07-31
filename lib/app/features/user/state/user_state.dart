@@ -1,4 +1,4 @@
-import '../model/user_model.dart';
+import '../entity/user_model.dart';
 
 enum UserStatus { loading, success, failure, initialize, updateSuccess }
 

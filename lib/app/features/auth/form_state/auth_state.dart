@@ -1,4 +1,4 @@
-import '../../user/model/user_model.dart';
+import '../../user/entity/user_model.dart';
 import '../enum/auth_status.dart';
 
 class AuthState {

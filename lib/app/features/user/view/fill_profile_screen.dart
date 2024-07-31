@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:doctor_appointment/app/core/router/app_routing_mixin.dart';
-import 'package:doctor_appointment/app/features/user/model/user_model.dart';
+import 'package:doctor_appointment/app/features/user/entity/user_model.dart';
 import 'package:doctor_appointment/app/features/user/state/user_state.dart';
 import 'package:doctor_appointment/design/common/app_context.dart';
 import 'package:doctor_appointment/design/common/color_extension.dart';
@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
@@ -97,7 +98,7 @@ class FillProfileScreen extends HookConsumerWidget with AppRoutingMixin {
 
     useEffect(() {
       if (userState.status == UserStatus.updateSuccess) {
-        goOnBoard(context);
+        //goOnBoard(context);
       }
       // Dispose các controller khi widget unmount
       return () {};
@@ -150,77 +151,21 @@ class FillProfileScreen extends HookConsumerWidget with AppRoutingMixin {
                   GestureDetector(
                     child: CircleAvatar(
                       radius: context.width * 0.33 / 2,
-                      backgroundImage: mFormState.value.avatar.path.isNotEmpty
-                          ? FileImage(File(mFormState.value.avatar.path))
-                          : const AssetImage(
-                              "lib/design/assets/icons/avatar.png",
-                            ) as ImageProvider,
+                      child: ClipOval(
+                        child: Image.network(
+                          mFormState.value.avatar,
+                          errorBuilder: (context, error, stackTrace) {
+                            return CircleAvatar(
+                              radius: context.width * 0.33 / 2,
+                              backgroundImage: const AssetImage(
+                                  'lib/design/assets/icons/avatar.png'),
+                            );
+                          },
+                        ),
+                      ),
                     ),
                     onTap: () {
-                      CustomBottomSheet.showBottomSheet(
-                        context: context,
-                        title: 'Choose Avatar',
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 20, right: 20),
-                              child: ListView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: 2,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  XFile? pickedFile;
-                                  return GestureDetector(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          index == 0 ? "Camera" : "Photo",
-                                          style:
-                                              context.appTextStyles.labelLarge,
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        )
-                                      ],
-                                    ),
-                                    onTap: () async => {
-                                      if (index == 0)
-                                        {
-                                          pickedFile = await ImagePicker()
-                                              .pickImage(
-                                                  source: ImageSource.camera),
-
-                                          if (pickedFile != null)
-                                            {
-                                              mFormState.value = mFormState
-                                                  .value
-                                                  .copyWith(avatar: pickedFile),
-                                            },
-                                        }
-                                      else
-                                        {
-                                          pickedFile = await ImagePicker()
-                                              .pickImage(
-                                                  source: ImageSource.gallery),
-                                          if (pickedFile != null)
-                                            {
-                                              mFormState.value = mFormState
-                                                  .value
-                                                  .copyWith(avatar: pickedFile),
-                                            },
-                                        }
-                                    },
-                                  );
-                                },
-                              )),
-                        ),
-                        scrollable: false,
-                        initialChildSize: 0.6,
-                        minChildSize: 0.5,
-                        maxChildSize: 0.8,
-                        isCustomSizeWithKeyBoard: true,
-                      );
+                      _pickImage(context, mFormState, userNotifier, userState);
                     },
                   ),
                 ],
@@ -432,6 +377,7 @@ class FillProfileScreen extends HookConsumerWidget with AppRoutingMixin {
                     if (_formKey.currentState!.validate()) {
                       UserModel newUser = UserModel(
                         uid: userState.user?.uid,
+                        avatar: mFormState.value.avatar,
                         fullName: mFormState.value.name.value,
                         email: mFormState.value.email.value,
                         dateOfBirth: mFormState.value.dateOfBirth,
@@ -450,5 +396,108 @@ class FillProfileScreen extends HookConsumerWidget with AppRoutingMixin {
         ),
       ),
     );
+  }
+
+  Future<void> _pickImage(
+      BuildContext context,
+      ValueNotifier<FillProfileFormState> mFormState,
+      UserStateNotifier userNotifier,
+      UserState userState) async {
+    CustomBottomSheet.showBottomSheet(
+      context: context,
+      title: 'Choose Avatar',
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 2,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                XFile? pickedFile;
+                XFile? cropFile;
+                ImagePicker picker = ImagePicker();
+                String? url;
+                return GestureDetector(
+                  child: Column(
+                    children: [
+                      Text(
+                        index == 0 ? "Camera" : "Photo",
+                        style: context.appTextStyles.labelLarge,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      )
+                    ],
+                  ),
+                  onTap: () async => {
+                    if (index == 0)
+                      {
+                        pickedFile =
+                            await picker.pickImage(source: ImageSource.camera),
+                        if (pickedFile != null)
+                          {
+                            cropFile = await _cropImage(pickedFile),
+                            if (cropFile != null)
+                              {
+                                url = await userNotifier.uploadAvatar(
+                                    cropFile!, userState.user?.uid ?? ""),
+                                print('-----------------url: $url'),
+                                mFormState.value = mFormState.value
+                                    .copyWith(avatar: url ?? ""),
+                              }
+                          }
+                      }
+                    else
+                      {
+                        pickedFile =
+                            await picker.pickImage(source: ImageSource.gallery),
+                        if (pickedFile != null)
+                          {
+                            cropFile = await _cropImage(pickedFile),
+                            if (cropFile != null)
+                              {
+                                url = await userNotifier.uploadAvatar(
+                                    cropFile!, userState.user?.uid ?? ""),
+                                print('-----------------url: $url'),
+                                mFormState.value = mFormState.value
+                                    .copyWith(avatar: url ?? ""),
+                              }
+                          }
+                      }
+                  },
+                );
+              },
+            )),
+      ),
+      scrollable: false,
+      initialChildSize: 0.6,
+      minChildSize: 0.5,
+      maxChildSize: 0.8,
+      isCustomSizeWithKeyBoard: true,
+    );
+  }
+
+  Future<XFile?> _cropImage(XFile? imageFile) async {
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: imageFile?.path ?? "",
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 100,
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'Crop Image',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: false,
+            cropStyle: CropStyle.circle),
+        IOSUiSettings(title: 'Crop Image', cropStyle: CropStyle.circle),
+      ],
+    );
+    if (croppedFile != null) {
+      return XFile(croppedFile.path);
+    }
+    return null;
   }
 }

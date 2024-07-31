@@ -23,7 +23,6 @@ class AuthView extends ConsumerWidget {
       case AuthStatus.authenticated:
         return const MainView();
       case AuthStatus.unauthenticated:
-        print("-----------------------------------");
         return const WelcomeScreen();
       default:
         return const WelcomeScreen();

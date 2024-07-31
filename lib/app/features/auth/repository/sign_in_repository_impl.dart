@@ -2,7 +2,7 @@ import 'package:doctor_appointment/app/features/auth/repository/sign_in_reposito
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../user/model/user_model.dart';
+import '../../user/entity/user_model.dart';
 import '../enum/auth_status.dart';
 import '../form_state/auth_state.dart';
 import '../model/auth_model.dart';

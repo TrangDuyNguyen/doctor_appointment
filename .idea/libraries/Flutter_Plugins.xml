@@ -23,6 +23,10 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/firebase_core-3.1.0" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/cloud_firestore_web-4.0.1" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/firebase_auth-5.1.0" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/firebase_storage_web-3.9.9" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/firebase_storage-12.0.1" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/image_cropper-7.1.0" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/image_cropper_for_web-5.1.0" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

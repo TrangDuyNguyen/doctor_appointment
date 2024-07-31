@@ -1,13 +1,12 @@
 import 'package:doctor_appointment/app/core/validators/email.dart';
 import 'package:doctor_appointment/app/core/validators/phone.dart';
-import 'package:doctor_appointment/app/features/user/model/user_model.dart';
+import 'package:doctor_appointment/app/features/user/entity/user_model.dart';
 import 'package:formz/formz.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../../core/validators/name.dart';
 
 class FillProfileFormState with FormzMixin {
-  final XFile avatar;
+  final String avatar;
   final Name name;
   final DateTime dateOfBirth;
   final Email email;
@@ -17,7 +16,7 @@ class FillProfileFormState with FormzMixin {
 
   factory FillProfileFormState.fake() {
     return FillProfileFormState(
-      avatar: XFile(''),
+      avatar: '',
       name: const Name.pure('Nguyen Duy Trang'),
       email: const Email.pure('trangndps10349@gmail.com'),
       dateOfBirth: DateTime.now(),
@@ -28,11 +27,8 @@ class FillProfileFormState with FormzMixin {
   }
 
   factory FillProfileFormState.initial(UserModel? userModel) {
-    // if (AppConfig.instance.isDebugMode) {
-    //return FillProfileFormState.fake();
-    // }
     return FillProfileFormState(
-      avatar: XFile(userModel?.avatar ?? ""),
+      avatar: userModel?.avatar ?? "",
       name: Name.pure(userModel?.displayName ?? ""),
       email: Email.pure(userModel?.email ?? ""),
       dateOfBirth: userModel?.dateOfBirth ?? DateTime.now(),
@@ -43,7 +39,7 @@ class FillProfileFormState with FormzMixin {
   }
 
   FillProfileFormState({
-    XFile? avatar,
+    String? avatar,
     Name? name,
     Email? email,
     DateTime? dateOfBirth,
@@ -55,10 +51,10 @@ class FillProfileFormState with FormzMixin {
         dateOfBirth = dateOfBirth ?? DateTime.now(),
         phone = phone ?? const Phone.pure(),
         gender = gender ?? '',
-        avatar = avatar ?? XFile('');
+        avatar = avatar ?? '';
 
   FillProfileFormState copyWith({
-    XFile? avatar,
+    String? avatar,
     Name? name,
     Email? email,
     DateTime? dateOfBirth,
